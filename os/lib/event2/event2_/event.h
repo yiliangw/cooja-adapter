@@ -8,6 +8,7 @@ extern "C" {
 #include "event2_/util.h"
 #include "event2_/event_struct.h"
 
+#define EVENT_MAX_PRIORITIES 256
 
 #define EV_TIMEOUT	0x01
 #define EV_READ		0x02

@@ -42,6 +42,7 @@
 
 struct eventop {
 	const char *name;
+	void *(*init)(struct event_base *);
 	int (*add)(struct event_base *, evutil_socket_t fd, short old, short events, void *fdinfo);
 	int (*del)(struct event_base *, evutil_socket_t fd, short old, short events, void *fdinfo);
 	int (*dispatch)(struct event_base *, struct timeval *);

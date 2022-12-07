@@ -300,6 +300,8 @@ event_config_new(void)
 	return (cfg);
 }
 
+extern struct eventop coojaaops;
+
 struct event_base *
 event_base_new_with_config(const struct event_config *cfg)
 {
@@ -349,26 +351,8 @@ event_base_new_with_config(const struct event_config *cfg)
 	    base->max_dispatch_time.tv_sec == -1)
 		base->limit_callbacks_after_prio = INT_MAX;
 
-	for (i = 0; eventops[i] && !base->evbase; i++) {
-		if (cfg != NULL) {
-			/* determine if this backend should be avoided */
-			if (event_config_is_avoided_method(cfg,
-				eventops[i]->name))
-				continue;
-			if ((eventops[i]->features & cfg->require_features)
-			    != cfg->require_features)
-				continue;
-		}
-
-		/* also obey the environment variables */
-		if (should_check_environment &&
-		    event_is_method_disabled(eventops[i]->name))
-			continue;
-
-		base->evsel = eventops[i];
-
-		base->evbase = base->evsel->init(base);
-	}
+	base->evsel = coojaaops;
+	base->evbase = base->evsel->init(base);
 
 	if (base->evbase == NULL) {
 		event_warnx("%s: no event mechanism available",
@@ -378,9 +362,6 @@ event_base_new_with_config(const struct event_config *cfg)
 		return NULL;
 	}
 
-	if (evutil_getenv_("EVENT_SHOW_METHOD"))
-		event_msgx("libevent using: %s", base->evsel->name);
-
 	/* allocate a single active event queue */
 	if (event_base_priority_init(base, 1) < 0) {
 		event_base_free(base);
@@ -389,6 +370,47 @@ event_base_new_with_config(const struct event_config *cfg)
 
 	return (base);
 }
+
+int
+event_base_priority_init(struct event_base *base, int npriorities)
+{
+	int i, r;
+	r = -1;
+
+	EVBASE_ACQUIRE_LOCK(base, th_base_lock);
+
+	if (N_ACTIVE_CALLBACKS(base) || npriorities < 1
+	    || npriorities >= EVENT_MAX_PRIORITIES)
+		goto err;
+
+	if (npriorities == base->nactivequeues)
+		goto ok;
+
+	if (base->nactivequeues) {
+		mm_free(base->activequeues);
+		base->nactivequeues = 0;
+	}
+
+	/* Allocate our priority queues */
+	base->activequeues = (struct evcallback_list *)
+	  mm_calloc(npriorities, sizeof(struct evcallback_list));
+	if (base->activequeues == NULL) {
+		event_warn("%s: calloc", __func__);
+		goto err;
+	}
+	base->nactivequeues = npriorities;
+
+	for (i = 0; i < base->nactivequeues; ++i) {
+		TAILQ_INIT(&base->activequeues[i]);
+	}
+
+ok:
+	r = 0;
+err:
+	EVBASE_RELEASE_LOCK(base, th_base_lock);
+	return (r);
+}
+
 
 #define CLOCK_USECOND_RECIPROCAL (1000000 / CLOCK_SECOND)
 /** Set 'tp' to the current time according to 'base'.  We must hold the lock
