@@ -23,6 +23,6 @@
 
 #define event_warnx(...)		__warn(__VA_ARGS__)
 #define event_errx(eval, ...)	__error(__VA_ARGS__)
-
+#define event_warn(...)			__warn(__VA_ARGS__)
 
 #endif /* LOG_INTERNAL_H_INCLUDED_ */

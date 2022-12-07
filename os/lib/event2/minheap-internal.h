@@ -12,6 +12,7 @@ typedef struct min_heap
 	unsigned n, a;
 } min_heap_t;
 
+void 			min_heap_ctor_(min_heap_t* s);
 int	     		min_heap_empty_(min_heap_t* s);
 struct event*  	min_heap_top_(min_heap_t* s);
 int	     		min_heap_elt_is_top_(const struct event *e);

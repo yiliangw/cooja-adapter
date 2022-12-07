@@ -5,6 +5,7 @@
 #define min_heap_elem_greater(a, b) \
 	(evutil_timercmp(&(a)->ev_timeout, &(b)->ev_timeout, >))
 
+void min_heap_ctor_(min_heap_t* s) { s->p = 0; s->n = 0; s->a = 0; }
 int min_heap_empty_(min_heap_t* s) { return 0u == s->n; }
 struct event* min_heap_top_(min_heap_t* s) { return s->n ? *s->p : 0; }
 unsigned min_heap_size_(min_heap_t* s) { return s->n; }

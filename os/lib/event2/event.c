@@ -8,6 +8,9 @@
 #include "log-internal.h"
 #include "mm-internal.h"
 #include "evthread-internal.h"
+#include "changelist-internal.h"
+
+#include "cooja_config.h"
 
 #include <string.h>
 #include <limits.h>
@@ -19,11 +22,13 @@
 #include "lib/assert.h"
 
 
+struct event_change;
+
+
 static struct event_base *current_base = NULL;
 
 /** Mask used to get the real tv_usec value from a common timeout. */
 #define COMMON_TIMEOUT_MICROSECONDS_MASK       0x000fffff
-
 
 
 #define EVENT_BASE_ASSERT_LOCKED(base)	assert(base != NULL)	/* Do not support evthread now */
@@ -35,7 +40,7 @@ static int timeout_next(struct event_base *base, struct timeval **tv_p);
 static int event_haveevents(struct event_base *base);
 static int	event_process_active(struct event_base *);
 static int event_process_active_single_queue(struct event_base *base, 
-	struct evcallback_list *activeq, int max_to_process, const struct timeval *endtime);
+struct evcallback_list *activeq, int max_to_process, const struct timeval *endtime);
 static void event_queue_make_later_events_active(struct event_base *base);
 static void timeout_process(struct event_base *base);
 static inline struct event_callback *event_to_event_callback(struct event *ev);
@@ -63,16 +68,17 @@ static void event_debug_note_setup_(const struct event *ev);
 static void insert_common_timeout_inorder(struct common_timeout_list *ctl,
     struct event *ev);
 
-// TODO: Initialize members of struct event_base explicitly
+
 struct event_base *
 event_base_new(void)
 {
-	if (current_base != NULL)
-		__error("More than one event base");
-	
-	current_base = mm_calloc(1, sizeof(struct event_base));
-
-	return current_base;
+	struct event_base *base = NULL;
+	struct event_config *cfg = event_config_new();
+	if (cfg) {
+		base = event_base_new_with_config(cfg);
+		event_config_free(cfg);
+	}
+	return base;
 }
 
 int
@@ -276,6 +282,112 @@ timeout_next(struct event_base *base, struct timeval **tv_p)
 
 out:
 	return (res);
+}
+
+struct event_config *
+event_config_new(void)
+{
+	struct event_config *cfg = mm_calloc(1, sizeof(*cfg));
+
+	if (cfg == NULL)
+		return (NULL);
+
+	TAILQ_INIT(&cfg->entries);
+	cfg->max_dispatch_interval.tv_sec = -1;
+	cfg->max_dispatch_callbacks = INT_MAX;
+	cfg->limit_callbacks_after_prio = 1;
+
+	return (cfg);
+}
+
+struct event_base *
+event_base_new_with_config(const struct event_config *cfg)
+{
+	int i;
+	struct event_base *base;
+
+	if ((base = mm_calloc(1, sizeof(struct event_base))) == NULL) {
+		event_warn("%s: calloc", __func__);
+		return NULL;
+	}
+
+	if (cfg)
+		base->flags = cfg->flags;
+
+	/* We do not neet to configure the timer for cooja simulation. */
+
+	min_heap_ctor_(&base->timeheap);
+
+	base->sig.ev_signal_pair[0] = -1;
+	base->sig.ev_signal_pair[1] = -1;
+
+	/* Multi-thread not supporeted */
+
+	TAILQ_INIT(&base->active_later_queue);
+
+	evmap_io_initmap_(&base->io);
+	evmap_signal_initmap_(&base->sigmap);
+	event_changelist_init_(&base->changelist);
+
+	base->evbase = NULL;
+
+	if (cfg) {
+		memcpy(&base->max_dispatch_time,
+		    &cfg->max_dispatch_interval, sizeof(struct timeval));
+		base->limit_callbacks_after_prio =
+		    cfg->limit_callbacks_after_prio;
+	} else {
+		base->max_dispatch_time.tv_sec = -1;
+		base->limit_callbacks_after_prio = 1;
+	}
+	if (cfg && cfg->max_dispatch_callbacks >= 0) {
+		base->max_dispatch_callbacks = cfg->max_dispatch_callbacks;
+	} else {
+		base->max_dispatch_callbacks = INT_MAX;
+	}
+	if (base->max_dispatch_callbacks == INT_MAX &&
+	    base->max_dispatch_time.tv_sec == -1)
+		base->limit_callbacks_after_prio = INT_MAX;
+
+	for (i = 0; eventops[i] && !base->evbase; i++) {
+		if (cfg != NULL) {
+			/* determine if this backend should be avoided */
+			if (event_config_is_avoided_method(cfg,
+				eventops[i]->name))
+				continue;
+			if ((eventops[i]->features & cfg->require_features)
+			    != cfg->require_features)
+				continue;
+		}
+
+		/* also obey the environment variables */
+		if (should_check_environment &&
+		    event_is_method_disabled(eventops[i]->name))
+			continue;
+
+		base->evsel = eventops[i];
+
+		base->evbase = base->evsel->init(base);
+	}
+
+	if (base->evbase == NULL) {
+		event_warnx("%s: no event mechanism available",
+		    __func__);
+		base->evsel = NULL;
+		event_base_free(base);
+		return NULL;
+	}
+
+	if (evutil_getenv_("EVENT_SHOW_METHOD"))
+		event_msgx("libevent using: %s", base->evsel->name);
+
+	/* allocate a single active event queue */
+	if (event_base_priority_init(base, 1) < 0) {
+		event_base_free(base);
+		return NULL;
+	}
+
+	return (base);
 }
 
 #define CLOCK_USECOND_RECIPROCAL (1000000 / CLOCK_SECOND)
@@ -1139,3 +1251,4 @@ common_timeout_schedule(struct common_timeout_list *ctl,
 static void event_debug_assert_not_added_(const struct event *ev) {}
 static void event_debug_assert_socket_nonblocking_(evutil_socket_t fd) {}
 static void event_debug_note_setup_(const struct event *ev) {}
+

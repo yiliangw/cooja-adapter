@@ -1,3 +1,7 @@
+/*
+ *
+ */
+
 #ifndef EVENT2_UTIL_H_INCLUDED_
 #define EVENT2_UTIL_H_INCLUDED_
 
@@ -35,6 +39,9 @@ extern "C" {
 #define EV_UINT8_MAX  UINT8_MAX
 #define EV_INT8_MAX   INT8_MAX
 #define EV_INT8_MIN   INT8_MIN
+
+#define EV_MONOT_PRECISE  1
+#define EV_MONOT_FALLBACK 2
 
 #define evutil_timeradd(tvp, uvp, vvp)					\
 	do {								\
