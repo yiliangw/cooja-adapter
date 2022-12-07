@@ -49,13 +49,6 @@
 #include "dev/watchdog.h"
 
 #include "net/queuebuf.h"
-#include "net/app-layer/coap/coap-engine.h"
-#include "net/app-layer/snmp/snmp.h"
-#include "services/rpl-border-router/rpl-border-router.h"
-#include "services/orchestra/orchestra.h"
-#include "services/shell/serial-shell.h"
-#include "services/simple-energest/simple-energest.h"
-#include "services/tsch-cs/tsch-cs.h"
 
 #include <stdio.h>
 #include <stdint.h>
