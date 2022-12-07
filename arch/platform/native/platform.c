@@ -286,52 +286,12 @@ platform_init_stage_three()
   setvbuf(stdout, (char *)NULL, _IONBF, 0);
 }
 /*---------------------------------------------------------------------------*/
+
+extern int umain(void);
 void
 platform_main_loop()
 {
-#if SELECT_STDIN
-  select_set_callback(STDIN_FILENO, &stdin_fd);
-#endif /* SELECT_STDIN */
-  while(1) {
-    fd_set fdr;
-    fd_set fdw;
-    int maxfd;
-    int i;
-    int retval;
-    struct timeval tv;
-
-    retval = process_run();
-
-    tv.tv_sec = retval ? 0 : SELECT_TIMEOUT / 1000;
-    tv.tv_usec = retval ? 1 : (SELECT_TIMEOUT * 1000) % 1000000;
-
-    FD_ZERO(&fdr);
-    FD_ZERO(&fdw);
-    maxfd = 0;
-    for(i = 0; i <= select_max; i++) {
-      if(select_callback[i] != NULL && select_callback[i]->set_fd(&fdr, &fdw)) {
-        maxfd = i;
-      }
-    }
-
-    retval = select(maxfd + 1, &fdr, &fdw, NULL, &tv);
-    if(retval < 0) {
-      if(errno != EINTR) {
-        perror("select");
-      }
-    } else if(retval > 0) {
-      /* timeout => retval == 0 */
-      for(i = 0; i <= maxfd; i++) {
-        if(select_callback[i] != NULL) {
-          select_callback[i]->handle_fd(&fdr, &fdw);
-        }
-      }
-    }
-
-    etimer_request_poll();
-  }
-
-  return;
+  umain();
 }
 /*---------------------------------------------------------------------------*/
 void
