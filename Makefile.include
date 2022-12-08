@@ -334,7 +334,7 @@ endif
 ### to create one
 CONTIKI_NG_PROJECT_MAP = $(BUILD_DIR_BOARD)/$(basename $(notdir $@)).map
 
-.PHONY: all clean distclean usage help targets boards savetarget savedefines viewconf
+.PHONY: all clean distclean targets boards savetarget savedefines viewconf
 
 clean:
 	$(Q)rm -f *.d *.e *.o $(CLEAN) \
@@ -479,8 +479,6 @@ endif
 
 %.flashprof: %.$(TARGET)
 	$(NM) -S -td --size-sort $< | grep -i " [t] " | cut -d' ' -f2,4
-
-include $(CONTIKI)/Makefile.help
 
 targets:
 	@ls $(CONTIKI_NG_RELOC_PLATFORM_DIR) $(TARGETDIRS)
