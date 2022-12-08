@@ -30,8 +30,8 @@
  *
  */
 
-#ifndef CONTIKI_CONF_H_
-#define CONTIKI_CONF_H_
+#ifndef PLATFORM_CONF_H_
+#define PLATFORM_CONF_H_
 
 /* include the project config */
 #ifdef PROJECT_CONF_PATH
@@ -64,35 +64,11 @@ typedef unsigned int uip_stats_t;
 #define UIP_CONF_BYTE_ORDER      UIP_LITTLE_ENDIAN
 #endif
 
-#if NETSTACK_CONF_WITH_IPV6
-
-#ifndef NETSTACK_CONF_NETWORK
-#define NETSTACK_CONF_NETWORK    tun6_net_driver
-#endif
-
 #ifndef NETSTACK_CONF_RADIO
 #define NETSTACK_CONF_RADIO   nullradio_driver
 #endif /* NETSTACK_CONF_RADIO */
 
 #define NETSTACK_CONF_LINUXRADIO_DEV "wpan0"
-
-/* configure network size and density */
-#ifndef NETSTACK_MAX_ROUTE_ENTRIES
-#define NETSTACK_MAX_ROUTE_ENTRIES   300
-#endif /* NETSTACK_MAX_ROUTE_ENTRIES */
-#ifndef NBR_TABLE_CONF_MAX_NEIGHBORS
-#define NBR_TABLE_CONF_MAX_NEIGHBORS 300
-#endif /* NBR_TABLE_CONF_MAX_NEIGHBORS */
-
-/* configure queues */
-#ifndef QUEUEBUF_CONF_NUM
-#define QUEUEBUF_CONF_NUM 64
-#endif /* QUEUEBUF_CONF_NUM */
-
-#define UIP_CONF_IPV6_QUEUE_PKT  1
-#define UIP_ARCH_IPCHKSUM        1
-
-#endif /* NETSTACK_CONF_WITH_IPV6 */
 
 #include <ctype.h>
 
@@ -111,4 +87,4 @@ int strcasecmp(const char*, const char*);
 #define PLATFORM_CONF_MAIN_ACCEPTS_ARGS  1
 #define PLATFORM_CONF_SUPPORTS_STACK_CHECK 0
 
-#endif /* CONTIKI_CONF_H_ */
+#endif /* PLATFORM_CONF_H_ */

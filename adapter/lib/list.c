@@ -44,7 +44,7 @@
  * \addtogroup list
  * @{
  */
-#include "contiki.h"
+#include "coojaa.h"
 #include "lib/list.h"
 
 #include <string.h>

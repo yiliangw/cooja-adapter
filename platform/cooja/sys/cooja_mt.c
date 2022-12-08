@@ -36,7 +36,7 @@
  * Fredrik Osterlind <fros@sics.se>
  */
 
-#include "contiki.h"
+#include "coojaa.h"
 #include "sys/cooja_mt.h"
 #include "sys/cc.h"
 

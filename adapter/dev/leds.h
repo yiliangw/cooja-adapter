@@ -102,7 +102,7 @@
 #ifndef LEDS_H_
 #define LEDS_H_
 /*---------------------------------------------------------------------------*/
-#include "contiki.h"
+#include "coojaa.h"
 #include "dev/gpio-hal.h"
 
 #include <stdint.h>

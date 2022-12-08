@@ -44,7 +44,7 @@
  */
 
 #include "sys/rtimer.h"
-#include "contiki.h"
+#include "coojaa.h"
 #include "rtimer-arch.h"
 #include "cc.h"
 

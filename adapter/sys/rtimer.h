@@ -53,7 +53,7 @@
 #ifndef RTIMER_H_
 #define RTIMER_H_
 
-#include "contiki.h"
+#include "coojaa.h"
 #include "dev/watchdog.h"
 #include <stdbool.h>
 

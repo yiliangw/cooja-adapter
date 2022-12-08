@@ -28,7 +28,7 @@
  *
  */
 
-#include "contiki.h"
+#include "coojaa.h"
 #include "lib/simEnvChange.h"
 
 const struct simInterface clock_interface;

@@ -35,7 +35,7 @@
 
 /* prefix all C header files with `extern "C"` */
 extern "C" {
-#include "contiki.h"
+#include "coojaa.h"
 }
 
 /*---------------------------------------------------------------------------*/

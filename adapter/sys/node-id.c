@@ -37,7 +37,7 @@
  *         Simon Duquennoy <simon.duquennoy@ri.se>
  */
 
-#include "contiki.h"
+#include "coojaa.h"
 #include "sys/node-id.h"
 
 uint16_t node_id = 0;

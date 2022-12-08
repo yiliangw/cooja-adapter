@@ -31,7 +31,7 @@
 #ifndef SIMENVCHANGE_H_
 #define SIMENVCHANGE_H_
 
-#include "contiki.h"
+#include "coojaa.h"
 
 /* Simulation interface structure */
 struct simInterface {

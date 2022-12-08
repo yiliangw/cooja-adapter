@@ -40,7 +40,7 @@
 #ifndef ENERGEST_H_
 #define ENERGEST_H_
 
-#include "contiki.h"
+#include "coojaa.h"
 
 #ifndef ENERGEST_CONF_ON
 /* Energest is disabled by default */

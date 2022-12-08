@@ -54,7 +54,7 @@
 #define PRINTF(...)
 #endif
 
-#include "contiki.h"
+#include "coojaa.h"
 #include "cfs/cfs.h"
 #include "cfs-coffee-arch.h"
 #include "cfs/cfs-coffee.h"

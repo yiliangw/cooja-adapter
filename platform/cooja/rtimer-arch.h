@@ -33,7 +33,7 @@
 #ifndef RTIMER_ARCH_H_
 #define RTIMER_ARCH_H_
 
-#include "contiki.h"
+#include "coojaa.h"
 #include "lib/simEnvChange.h"
 #include "sys/cooja_mt.h"
 

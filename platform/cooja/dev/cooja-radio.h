@@ -33,7 +33,7 @@
 #ifndef COOJA_RADIO_H_
 #define COOJA_RADIO_H_
 
-#include "contiki.h"
+#include "coojaa.h"
 #include "dev/radio.h"
 
 #ifdef COOJA_CONF_SIMULATE_TURNAROUND

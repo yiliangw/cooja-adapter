@@ -52,7 +52,7 @@
 #include "net/wpcap-drv.h"
 #endif /* __CYGWIN__ */
 
-#include "contiki.h"
+#include "coojaa.h"
 
 #include "dev/gpio-hal.h"
 #include "dev/leds.h"

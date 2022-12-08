@@ -38,7 +38,7 @@
  *     Implementation of the platform-independent aspects of the LED HAL
  */
 /*---------------------------------------------------------------------------*/
-#include "contiki.h"
+#include "coojaa.h"
 #include "dev/gpio-hal.h"
 #include "dev/leds.h"
 

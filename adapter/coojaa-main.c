@@ -1,4 +1,4 @@
-#include "contiki.h"
+#include "coojaa.h"
 #include "sys/node-id.h"
 #include "sys/platform.h"
 #include "sys/energest.h"

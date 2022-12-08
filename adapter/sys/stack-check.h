@@ -52,7 +52,7 @@
 #ifndef STACK_CHECK_H_
 #define STACK_CHECK_H_
 
-#include "contiki-conf.h"
+#include "platform-conf.h"
 
 /* Determine whether stack checking is supported depending on the plaform. */
 #ifdef PLATFORM_CONF_SUPPORTS_STACK_CHECK

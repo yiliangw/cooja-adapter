@@ -33,7 +33,7 @@
 #ifndef SENSORS_H_
 #define SENSORS_H_
 
-#include "contiki.h"
+#include "coojaa.h"
 
 /* some constants for the configure API */
 #define SENSORS_HW_INIT 128 /* internal - used only for initialization */

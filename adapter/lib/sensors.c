@@ -32,7 +32,7 @@
 
 #include <string.h>
 
-#include "contiki.h"
+#include "coojaa.h"
 
 #include "lib/sensors.h"
 

@@ -30,8 +30,8 @@
  *
  */
 
-#ifndef CONTIKI_CONF_H_
-#define CONTIKI_CONF_H_
+#ifndef PLATFORM_CONF_H_
+#define PLATFORM_CONF_H_
 
 /* include the project config */
 #ifdef PROJECT_CONF_PATH
@@ -56,47 +56,8 @@
 
 #define w_memcpy memcpy
 
-#ifdef NETSTACK_CONF_H
-
-/* These header overrides the below default configuration */
-#define NETSTACK__QUOTEME(s) NETSTACK_QUOTEME(s)
-#define NETSTACK_QUOTEME(s) #s
-#include NETSTACK__QUOTEME(NETSTACK_CONF_H)
-
-#else /* NETSTACK_CONF_H */
-
-/* Default network config */
-#define CSMA_CONF_SEND_SOFT_ACK 1
-#define CSMA_CONF_ACK_WAIT_TIME                RTIMER_SECOND / 500
-#define CSMA_CONF_AFTER_ACK_DETECTED_WAIT_TIME 0
-
-#endif /* NETSTACK_CONF_H */
-
 /* Radio setup */
 #define NETSTACK_CONF_RADIO cooja_radio_driver
-
-/* Default network config */
-#if NETSTACK_CONF_WITH_IPV6
-
-
-/* configure network size and density */
-#ifndef NETSTACK_MAX_ROUTE_ENTRIES
-#define NETSTACK_MAX_ROUTE_ENTRIES   300
-#endif /* NETSTACK_MAX_ROUTE_ENTRIES */
-#ifndef NBR_TABLE_CONF_MAX_NEIGHBORS
-#define NBR_TABLE_CONF_MAX_NEIGHBORS 300
-#endif /* NBR_TABLE_CONF_MAX_NEIGHBORS */
-
-/* configure queues */
-#ifndef QUEUEBUF_CONF_NUM
-#define QUEUEBUF_CONF_NUM 64
-#endif /* QUEUEBUF_CONF_NUM */
-
-#ifndef UIP_CONF_IPV6_QUEUE_PKT
-#define UIP_CONF_IPV6_QUEUE_PKT         1
-#endif /* UIP_CONF_IPV6_QUEUE_PKT */
-
-#endif /* NETSTACK_CONF_WITH_IPV6 */
 
 #define CC_CONF_VA_ARGS                1
 #define CC_CONF_INLINE inline
@@ -157,4 +118,4 @@ typedef unsigned long clock_time_t;
 #define LEDS_CONF_RED                    2
 #define LEDS_CONF_YELLOW                 4
 /*---------------------------------------------------------------------------*/
-#endif /* CONTIKI_CONF_H_ */
+#endif /* PLATFORM_CONF_H_ */

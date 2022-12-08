@@ -37,7 +37,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "contiki.h"
+#include "coojaa.h"
 #include "dev/eeprom.h"
 #include "sys/cc.h"
 

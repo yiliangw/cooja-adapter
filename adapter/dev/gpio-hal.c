@@ -37,7 +37,7 @@
  *     Implementation of the platform-independent aspects of the GPIO HAL
  */
 /*---------------------------------------------------------------------------*/
-#include "contiki.h"
+#include "coojaa.h"
 #include "dev/gpio-hal.h"
 #include "lib/list.h"
 #include "sys/log.h"

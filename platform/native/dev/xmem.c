@@ -32,7 +32,7 @@
  *
  */
 
-#include "contiki.h"
+#include "coojaa.h"
 #include "dev/xmem.h"
 
 #include <stdio.h>

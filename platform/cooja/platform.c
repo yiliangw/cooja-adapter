@@ -40,7 +40,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "contiki.h"
+#include "coojaa.h"
 #include "sys/cc.h"
 
 #include "sys/cooja_mt.h"

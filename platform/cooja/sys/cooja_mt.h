@@ -38,7 +38,7 @@
 #ifndef COOJA_MT_H_
 #define COOJA_MT_H_
 
-#include "contiki.h"
+#include "coojaa.h"
 
 #include <stdint.h>
 

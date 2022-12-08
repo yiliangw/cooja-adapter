@@ -40,7 +40,7 @@
  *     Atis Elsts <atis.elsts@bristol.ac.uk>
  */
 
-#include "contiki.h"
+#include "coojaa.h"
 #include "sys/stack-check.h"
 #include "dev/watchdog.h"
 #include <string.h>

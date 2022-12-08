@@ -45,7 +45,7 @@
 #ifndef CC_H_
 #define CC_H_
 
-#include "contiki.h"
+#include "coojaa.h"
 #include "sys/cc-gcc.h"
 
 #ifdef CC_CONF_INLINE

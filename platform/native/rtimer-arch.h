@@ -40,7 +40,7 @@
 #ifndef RTIMER_ARCH_H_
 #define RTIMER_ARCH_H_
 
-#include "contiki.h"
+#include "coojaa.h"
 
 #define RTIMER_ARCH_SECOND CLOCK_CONF_SECOND
 

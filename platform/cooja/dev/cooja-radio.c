@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "contiki.h"
+#include "coojaa.h"
 
 #include "sys/cooja_mt.h"
 #include "lib/simEnvChange.h"

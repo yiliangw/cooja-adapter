@@ -29,7 +29,7 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /*---------------------------------------------------------------------------*/
-#include "contiki.h"
+#include "coojaa.h"
 
 #include <string.h>
 #include <strformat.h>

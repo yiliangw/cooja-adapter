@@ -52,7 +52,7 @@
 #ifndef STACK_H_
 #define STACK_H_
 /*---------------------------------------------------------------------------*/
-#include "contiki.h"
+#include "coojaa.h"
 #include "lib/list.h"
 
 #include <stdbool.h>

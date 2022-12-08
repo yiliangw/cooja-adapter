@@ -1,4 +1,3 @@
-#include "contiki-conf.h"
 #include "event2_/event.h"
 #include "util-internal.h"
 

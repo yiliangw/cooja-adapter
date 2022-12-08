@@ -42,7 +42,7 @@
  * @{
  */
 
-#include "contiki.h"
+#include "coojaa.h"
 #include "sys/energest.h"
 #include "sys/compower.h"
 
