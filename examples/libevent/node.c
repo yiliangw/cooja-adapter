@@ -1,10 +1,13 @@
+#include "event2_/util.h"
+#include <bits/types/struct_timeval.h>
 #include <stdio.h>
 #include <event2_/event.h>
 
 static void timeout_cb(evutil_socket_t fd, short event, void *arg)
 {
-    static int i = 0;
-    printf("Timeout %d\n", i++);
+    struct timeval tv;
+    evutil_gettimeofday(&tv, NULL);
+    printf("Time: %ld s\n", tv.tv_sec);
 }
 
 int umain()
@@ -20,9 +23,8 @@ int umain()
     /* Initialize one event */
 	event_assign(&timeout, base, -1, flags, timeout_cb, (void*) &timeout);
 
-    printf("ev->base: %p\n", timeout.ev_base);
     evutil_timerclear(&tv);
-	tv.tv_sec = 2;
+	tv.tv_sec = 1;
 	event_add(&timeout, &tv);
 
     event_base_dispatch(base);

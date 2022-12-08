@@ -5,6 +5,12 @@
 extern "C" {
 #endif
 
+#ifdef CONTIKI_TARGET_NATIVE
+#define PLATFORM_NATIVE
+#elif defined(CONTIKI_TARGET_COOJA)
+#define PLATFORM_COOJA
+#endif
+
 #include "event2_/util.h"
 #include "event2_/event_struct.h"
 

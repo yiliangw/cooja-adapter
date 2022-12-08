@@ -48,10 +48,10 @@
  *
  */
 
+#include <stdint.h>
+#include <string.h>
+
 #include "sys/log.h"
-#include "net/ipv6/ip64-addr.h"
-#include "net/ipv6/uiplib.h"
-#include "deployment/deployment.h"
 
 int curr_log_level_rpl = LOG_CONF_LEVEL_RPL;
 int curr_log_level_tcpip = LOG_CONF_LEVEL_TCPIP;
@@ -82,82 +82,7 @@ struct log_module all_modules[] = {
   {NULL, NULL, 0},
 };
 
-#if NETSTACK_CONF_WITH_IPV6
 
-/*---------------------------------------------------------------------------*/
-void
-log_6addr(const uip_ipaddr_t *ipaddr)
-{
-  char buf[UIPLIB_IPV6_MAX_STR_LEN];
-  uiplib_ipaddr_snprint(buf, sizeof(buf), ipaddr);
-  LOG_OUTPUT("%s", buf);
-}
-/*---------------------------------------------------------------------------*/
-int
-log_6addr_compact_snprint(char *buf, size_t size, const uip_ipaddr_t *ipaddr)
-{
-  if(ipaddr == NULL) {
-    return snprintf(buf, size, "6A-NULL");
-  } else {
-    char *prefix = NULL;
-    if(uip_is_addr_mcast(ipaddr)) {
-      prefix = "6M";
-    } else if(uip_is_addr_linklocal(ipaddr)) {
-      prefix = "6L";
-    } else {
-      prefix = "6G";
-    }
-#if BUILD_WITH_DEPLOYMENT
-    return snprintf(buf, size, "%s-%03u", prefix, deployment_id_from_iid(ipaddr));
-#else /* BUILD_WITH_DEPLOYMENT */
-    return snprintf(buf, size, "%s-%04x", prefix, UIP_HTONS(ipaddr->u16[sizeof(uip_ipaddr_t)/2-1]));
-#endif /* BUILD_WITH_DEPLOYMENT */
-  }
-}
-/*---------------------------------------------------------------------------*/
-void
-log_6addr_compact(const uip_ipaddr_t *ipaddr)
-{
-  char buf[8];
-  log_6addr_compact_snprint(buf, sizeof(buf), ipaddr);
-  LOG_OUTPUT("%s", buf);
-}
-#endif /* NETSTACK_CONF_WITH_IPV6 */
-/*---------------------------------------------------------------------------*/
-void
-log_lladdr(const linkaddr_t *lladdr)
-{
-  if(lladdr == NULL) {
-    LOG_OUTPUT("(NULL LL addr)");
-    return;
-  } else {
-    unsigned int i;
-    for(i = 0; i < LINKADDR_SIZE; i++) {
-      if(i > 0 && i % 2 == 0) {
-        LOG_OUTPUT(".");
-      }
-      LOG_OUTPUT("%02x", lladdr->u8[i]);
-    }
-  }
-}
-/*---------------------------------------------------------------------------*/
-void
-log_lladdr_compact(const linkaddr_t *lladdr)
-{
-  if(lladdr == NULL || linkaddr_cmp(lladdr, &linkaddr_null)) {
-    LOG_OUTPUT("LL-NULL");
-  } else {
-#if BUILD_WITH_DEPLOYMENT
-    LOG_OUTPUT("LL-%04u", deployment_id_from_lladdr(lladdr));
-#else /* BUILD_WITH_DEPLOYMENT */
-#if LINKADDR_SIZE == 8
-    LOG_OUTPUT("LL-%04x", UIP_HTONS(lladdr->u16[LINKADDR_SIZE/2-1]));
-#elif LINKADDR_SIZE == 2
-    LOG_OUTPUT("LL-%04x", UIP_HTONS(lladdr->u16));
-#endif
-#endif /* BUILD_WITH_DEPLOYMENT */
-  }
-}
 /*---------------------------------------------------------------------------*/
 void
 log_bytes(const void *data, size_t length)
@@ -169,6 +94,9 @@ log_bytes(const void *data, size_t length)
   }
 }
 /*---------------------------------------------------------------------------*/
+#ifndef MIN
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
+#endif
 void
 log_set_level(const char *module, int level)
 {

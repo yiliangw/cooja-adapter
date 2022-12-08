@@ -31,8 +31,6 @@
 #ifndef BEEP_H_
 #define BEEP_H_
 
-#include "sys/clock.h"
-
 #define BEEP_ON  1
 #define BEEP_OFF 0
 
@@ -53,7 +51,7 @@ void beep_off(void);
 
 void beep_spinup(void);
 
-void beep_long(clock_time_t len);
+// void beep_long(clock_time_t len);
 
 void beep_quick(int num);
 

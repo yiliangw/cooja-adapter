@@ -52,11 +52,7 @@
 #define __LOG_H__
 
 #include <stdio.h>
-#include "net/linkaddr.h"
 #include "sys/log-conf.h"
-#if NETSTACK_CONF_WITH_IPV6
-#include "net/ipv6/uip.h"
-#endif /* NETSTACK_CONF_WITH_IPV6 */
 
 /* The different log levels available */
 #define LOG_LEVEL_NONE         0 /* No log */
@@ -233,44 +229,6 @@ extern struct log_module all_modules[];
 #define LOG_INFO_ENABLED       ((LOG_LEVEL) >= LOG_LEVEL_INFO)
 #define LOG_DBG_ENABLED        ((LOG_LEVEL) >= LOG_LEVEL_DBG)
 
-#if NETSTACK_CONF_WITH_IPV6
-
-/**
- * Logs an IPv6 address
- * \param ipaddr The IPv6 address
-*/
-void log_6addr(const uip_ipaddr_t *ipaddr);
-
-/**
- * Logs an IPv6 address with a compact format
- * \param ipaddr The IPv6 address
-*/
-void log_6addr_compact(const uip_ipaddr_t *ipaddr);
-
-/**
- * Write at most size - 1 characters of the IP address to the output string,
- * in a compact representation. The output is always null-terminated, unless
- * size is 0.
- *
- * \param buf A pointer to an output string with at least size bytes.
- * \param size The max number of characters to write to the output string.
- * \param ipaddr A pointer to a uip_ipaddr_t that will be printed with printf().
- */
-int log_6addr_compact_snprint(char *buf, size_t size, const uip_ipaddr_t *ipaddr);
-
-#endif /* NETSTACK_CONF_WITH_IPV6 */
-
-/**
- * Logs a link-layer address
- * \param lladdr The link-layer address
-*/
-void log_lladdr(const linkaddr_t *lladdr);
-
-/**
- * Logs a link-layer address with a compact format
- * \param lladdr The link-layer address
-*/
-void log_lladdr_compact(const linkaddr_t *lladdr);
 
 /**
  * Logs a byte array as hex characters

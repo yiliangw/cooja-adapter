@@ -73,7 +73,6 @@ rtimer_arch_init(void)
 void
 rtimer_arch_schedule(rtimer_clock_t t)
 {
-#ifndef _WIN32
   struct itimerval val;
   rtimer_clock_t c;
 
@@ -87,6 +86,5 @@ rtimer_arch_schedule(rtimer_clock_t t)
 
   val.it_interval.tv_sec = val.it_interval.tv_usec = 0;
   setitimer(ITIMER_REAL, &val, NULL);
-#endif /* !_WIN32 */
 }
 /*---------------------------------------------------------------------------*/

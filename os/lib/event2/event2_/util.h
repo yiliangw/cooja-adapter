@@ -43,27 +43,8 @@ extern "C" {
 #define EV_MONOT_PRECISE  1
 #define EV_MONOT_FALLBACK 2
 
-#ifdef PLATFORM_NATIVE
-#include <sys/time.h>
-#define evutil_gettimeofday(tv, tz) gettimeofday((tv), (tz))
-#else
-#include <bits/types/struct_timeval.h>
-#include "sys/clock.h"
-struct timezone
-  {
-    int tz_minuteswest;
-    int tz_dsttime;
-  };
-
-#define CLOCK_USECOND_RECIPROCAL (1000000 / CLOCK_SECOND)
-static inline int evutil_gettimeofday(struct timeval *tv, struct timezone *tz)
-{
-	(void) tz;
-	tv->tv_sec = clock_seconds();
-	tv->tv_usec = (clock_time() % CLOCK_SECOND) * CLOCK_USECOND_RECIPROCAL;
-	return 0;
-}
-#endif
+struct timezone;
+int evutil_gettimeofday(struct timeval *tv, struct timezone *tz);
 
 #define evutil_timeradd(tvp, uvp, vvp)					\
 	do {								\

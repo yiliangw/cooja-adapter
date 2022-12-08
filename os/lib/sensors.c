@@ -41,11 +41,9 @@ extern unsigned char sensors_flags[];
 
 #define FLAG_CHANGED    0x80
 
-process_event_t sensors_event;
 
 static unsigned char num_sensors;
 
-PROCESS(sensors_process, "Sensors");
 
 /*---------------------------------------------------------------------------*/
 static int
@@ -76,7 +74,6 @@ void
 sensors_changed(const struct sensors_sensor *s)
 {
   sensors_flags[get_sensor_index(s)] |= FLAG_CHANGED;
-  process_poll(&sensors_process);
 }
 /*---------------------------------------------------------------------------*/
 const struct sensors_sensor *
@@ -96,40 +93,3 @@ sensors_find(const char *prefix)
   }
   return NULL;
 }
-/*---------------------------------------------------------------------------*/
-PROCESS_THREAD(sensors_process, ev, data)
-{
-  static int i;
-  static int events;
-
-  PROCESS_BEGIN();
-
-  sensors_event = process_alloc_event();
-
-  for(i = 0; sensors[i] != NULL; ++i) {
-    sensors_flags[i] = 0;
-    sensors[i]->configure(SENSORS_HW_INIT, 0);
-  }
-  num_sensors = i;
-
-  while(1) {
-
-    PROCESS_WAIT_EVENT();
-
-    do {
-      events = 0;
-      for(i = 0; i < num_sensors; ++i) {
-	if(sensors_flags[i] & FLAG_CHANGED) {
-	  if(process_post(PROCESS_BROADCAST, sensors_event, (void *)sensors[i]) == PROCESS_ERR_OK) {
-	    PROCESS_WAIT_EVENT_UNTIL(ev == sensors_event);
-	  }
-	  sensors_flags[i] &= ~FLAG_CHANGED;
-	  events++;
-	}
-      }
-    } while(events);
-  }
-
-  PROCESS_END();
-}
-/*---------------------------------------------------------------------------*/

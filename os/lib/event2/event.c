@@ -19,7 +19,6 @@
 #include <bits/types/struct_timeval.h>
 #include <sys/queue.h>
 
-#include "sys/clock.h"
 #include "lib/assert.h"
 
 
@@ -144,7 +143,7 @@ event_base_loop(struct event_base *base, int flags)
 		/* If we have no events, we just exit */
 		if (0==(flags&EVLOOP_NO_EXIT_ON_EMPTY) &&
 		    !event_haveevents(base) && !N_ACTIVE_CALLBACKS(base)) {
-			__debug("%s: no events registered.", __func__);
+			event_debug(("%s: no events registered.", __func__));
 			retval = 1;
 			goto done;
 		}
@@ -154,8 +153,8 @@ event_base_loop(struct event_base *base, int flags)
 		res = evsel->dispatch(base, tv_p);
 
 		if (res == -1) {
-			__debug("%s: dispatch returned unsuccessfully.",
-				__func__);
+			event_debug(("%s: dispatch returned unsuccessfully.",
+				__func__));
 			retval = -1;
 			goto done;
 		}
@@ -171,7 +170,7 @@ event_base_loop(struct event_base *base, int flags)
 		} else if (flags & EVLOOP_NONBLOCK)
 			done = 1;
 	}
-	__debug("%s: asked to terminate loop.", __func__);
+	event_debug(("%s: asked to terminate loop.", __func__));
 
 done:
 	base->running_loop = 0;
@@ -456,8 +455,8 @@ timeout_process(struct event_base *base)
 		/* delete this event from the I/O queues */
 		event_del_nolock_(ev, EVENT_DEL_NOBLOCK);
 
-		__debug("timeout_process: event: %p, call %p",
-			 ev, ev->ev_callback);
+		event_debug(("timeout_process: event: %p, call %p",
+			 ev, ev->ev_callback));
 		event_active_nolock_(ev, EV_TIMEOUT, 1);
 	}
 }
@@ -490,8 +489,8 @@ event_del_nolock_(struct event *ev, int blocking)
 	struct event_base *base;
 	int res = 0, notify = 0;
 
-	__debug("event_del: %p (fd "EV_SOCK_FMT"), callback %p",
-		ev, EV_SOCK_ARG(ev->ev_fd), ev->ev_callback);
+	event_debug(("event_del: %p (fd "EV_SOCK_FMT"), callback %p",
+		ev, EV_SOCK_ARG(ev->ev_fd), ev->ev_callback));
 
 	/* An event without a base has not been added */
 	if (ev->ev_base == NULL)
@@ -809,8 +808,8 @@ event_active_nolock_(struct event *ev, int res, short ncalls)
 {
 	struct event_base *base;
 
-	__debug("event_active: %p (fd "EV_SOCK_FMT"), res %d, callback %p",
-		ev, EV_SOCK_ARG(ev->ev_fd), (int)res, ev->ev_callback);
+	event_debug(("event_active: %p (fd "EV_SOCK_FMT"), res %d, callback %p",
+		ev, EV_SOCK_ARG(ev->ev_fd), (int)res, ev->ev_callback));
 
 	base = ev->ev_base;
 	EVENT_BASE_ASSERT_LOCKED(base);
@@ -923,6 +922,10 @@ done:
 	return c;
 }
 
+/* 
+ * TODO: Only process available active event available before this tick
+ * (or implement other mechanisms) to gurantee timing accuracy in the simulation.
+ */
 static int
 event_process_active_single_queue(struct event_base *base,
     struct evcallback_list *activeq,
@@ -942,18 +945,18 @@ event_process_active_single_queue(struct event_base *base,
 				event_queue_remove_active(base, evcb);
 			else
 				event_del_nolock_(ev, EVENT_DEL_NOBLOCK);
-			__debug(
+			event_debug((
 			    "event_process_active: event: %p, %s%s%scall %p",
 			    ev,
 			    ev->ev_res & EV_READ ? "EV_READ " : " ",
 			    ev->ev_res & EV_WRITE ? "EV_WRITE " : " ",
 			    ev->ev_res & EV_CLOSED ? "EV_CLOSED " : " ",
-			    ev->ev_callback);
+			    ev->ev_callback));
 		} else {
 			event_queue_remove_active(base, evcb);
-			__debug("event_process_active: event_callback %p, "
+			event_debug(("event_process_active: event_callback %p, "
 				"closure %d, call %p",
-				evcb, evcb->evcb_closure, evcb->evcb_cb_union.evcb_callback);
+				evcb, evcb->evcb_closure, evcb->evcb_cb_union.evcb_callback));
 		}
 
 		if (!(evcb->evcb_flags & EVLIST_INTERNAL))
@@ -1128,7 +1131,7 @@ event_add_nolock_(struct event *ev, const struct timeval *tv,
 
 	EVENT_BASE_ASSERT_LOCKED(base);
 
-	__debug(
+	event_debug((
 		 "event_add: event: %p (fd "EV_SOCK_FMT"), %s%s%s%scall %p",
 		 ev,
 		 EV_SOCK_ARG(ev->ev_fd),
@@ -1136,7 +1139,7 @@ event_add_nolock_(struct event *ev, const struct timeval *tv,
 		 ev->ev_events & EV_WRITE ? "EV_WRITE " : " ",
 		 ev->ev_events & EV_CLOSED ? "EV_CLOSED " : " ",
 		 tv ? "EV_TIMEOUT " : " ",
-		 ev->ev_callback);
+		 ev->ev_callback));
 
 	EVUTIL_ASSERT(!(ev->ev_flags & ~EVLIST_ALL));
 
@@ -1225,9 +1228,9 @@ event_add_nolock_(struct event *ev, const struct timeval *tv,
 			evutil_timeradd(&now, tv, &ev->ev_timeout);
 		}
 
-		__debug(
+		event_debug((
 			 "event_add: event %p, timeout in %d seconds %d useconds, call %p",
-			 ev, (int)tv->tv_sec, (int)tv->tv_usec, ev->ev_callback);
+			 ev, (int)tv->tv_sec, (int)tv->tv_usec, ev->ev_callback));
 
 		event_queue_insert_timeout(base, ev);
 

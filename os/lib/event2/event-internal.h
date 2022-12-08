@@ -6,10 +6,6 @@
 #ifndef EVENT_INTERNAL_H_INCLUDED_
 #define EVENT_INTERNAL_H_INCLUDED_
 
-#ifdef CONTIKI_TARGET_NATIVE
-#define PLATFORM_NATIVE
-#endif
-
 #include "event2_/event.h"
 #include "event2_/event_struct.h"
 #include "minheap-internal.h"

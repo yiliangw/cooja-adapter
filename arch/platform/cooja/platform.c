@@ -43,8 +43,6 @@
 #include "contiki.h"
 #include "sys/cc.h"
 
-#include "sys/clock.h"
-#include "sys/etimer.h"
 #include "sys/cooja_mt.h"
 
 /*---------------------------------------------------------------------------*/
@@ -56,17 +54,12 @@
 #include "lib/random.h"
 #include "lib/simEnvChange.h"
 
-#include "net/netstack.h"
-#include "net/queuebuf.h"
-
 #include "dev/eeprom.h"
-#include "dev/serial-line.h"
 #include "dev/cooja-radio.h"
 #include "dev/button-sensor.h"
 #include "dev/pir-sensor.h"
 #include "dev/vib-sensor.h"
 #include "dev/moteid.h"
-#include "dev/button-hal.h"
 #include "dev/gpio-hal.h"
 
 #include "sys/node-id.h"
@@ -90,11 +83,6 @@
 #define Java_org_contikios_cooja_corecomm_CLASSNAME_tick COOJA__QUOTEME(COOJA_JNI_PATH,CLASSNAME,_tick)
 #define Java_org_contikios_cooja_corecomm_CLASSNAME_setReferenceAddress COOJA__QUOTEME(COOJA_JNI_PATH,CLASSNAME,_setReferenceAddress)
 
-#if NETSTACK_CONF_WITH_IPV6
-#include "net/ipv6/uip.h"
-#include "net/ipv6/uip-ds6.h"
-#endif /* NETSTACK_CONF_WITH_IPV6 */
-
 /* The main function, implemented in contiki-main.c */
 int main(void);
 
@@ -105,19 +93,18 @@ SIM_INTERFACE_NAME(rs232_interface);
 SIM_INTERFACE_NAME(simlog_interface);
 SIM_INTERFACE_NAME(beep_interface);
 SIM_INTERFACE_NAME(radio_interface);
-SIM_INTERFACE_NAME(button_interface);
 SIM_INTERFACE_NAME(pir_interface);
 SIM_INTERFACE_NAME(clock_interface);
 SIM_INTERFACE_NAME(leds_interface);
 SIM_INTERFACE_NAME(cfs_interface);
 SIM_INTERFACE_NAME(eeprom_interface);
-SIM_INTERFACES(&vib_interface, &moteid_interface, &rs232_interface, &simlog_interface, &beep_interface, &radio_interface, &button_interface, &pir_interface, &clock_interface, &leds_interface, &cfs_interface, &eeprom_interface);
+SIM_INTERFACES(&vib_interface, &moteid_interface, &rs232_interface, &simlog_interface, &beep_interface, &radio_interface, &pir_interface, &clock_interface, &leds_interface, &cfs_interface, &eeprom_interface);
 /* Example: manually add mote interfaces */
 //SIM_INTERFACE_NAME(dummy_interface);
 //SIM_INTERFACES(..., &dummy_interface);
 
 /* Sensors */
-SENSORS(&button_sensor, &pir_sensor, &vib_sensor);
+SENSORS( &pir_sensor, &vib_sensor);
 
 /*
  * referenceVar is used for comparing absolute and process relative memory.
@@ -128,40 +115,17 @@ intptr_t referenceVar;
 /*
  * Contiki and rtimer threads.
  */
-static struct cooja_mt_thread rtimer_thread;
 static struct cooja_mt_thread process_run_thread;
 /*---------------------------------------------------------------------------*/
 /* Needed since the new LEDs API does not provide this prototype */
 void leds_arch_init(void);
 /*---------------------------------------------------------------------------*/
-static void
-rtimer_thread_loop(void *data)
-{
-  while(1)
-  {
-    rtimer_arch_check();
 
-    /* Return to COOJA */
-    cooja_mt_yield();
-  }
-}
 /*---------------------------------------------------------------------------*/
 static void
 set_lladdr(void)
 {
-  linkaddr_t addr;
-
-  memset(&addr, 0, sizeof(linkaddr_t));
-#if NETSTACK_CONF_WITH_IPV6
-  for(size_t i = 0; i < sizeof(uip_lladdr.addr); i += 2) {
-    addr.u8[i + 1] = simMoteID & 0xff;
-    addr.u8[i + 0] = simMoteID >> 8;
-  }
-#else /* NETSTACK_CONF_WITH_IPV6 */
-  addr.u8[0] = simMoteID & 0xff;
-  addr.u8[1] = simMoteID >> 8;
-#endif /* NETSTACK_CONF_WITH_IPV6 */
-  linkaddr_set_node_addr(&addr);
+  
 }
 /*---------------------------------------------------------------------------*/
 void
@@ -176,7 +140,6 @@ void
 platform_init_stage_two()
 {
   set_lladdr();
-  button_hal_init();
 }
 /*---------------------------------------------------------------------------*/
 void
@@ -185,7 +148,6 @@ platform_init_stage_three()
   /* Initialize eeprom */
   eeprom_init();
   /* Start serial process */
-  serial_line_init();
 }
 /*---------------------------------------------------------------------------*/
 extern int umain(void);
@@ -239,7 +201,6 @@ JNIEXPORT void JNICALL
 Java_org_contikios_cooja_corecomm_CLASSNAME_init(JNIEnv *env, jobject obj)
 {
   /* Create rtimers and Contiki threads */
-  cooja_mt_start(&rtimer_thread, &rtimer_thread_loop, NULL);
   cooja_mt_start(&process_run_thread, &process_run_thread_loop, NULL);
  }
 /*---------------------------------------------------------------------------*/
@@ -321,29 +282,12 @@ Java_org_contikios_cooja_corecomm_CLASSNAME_tick(JNIEnv *env, jobject obj)
   /* Let all simulation interfaces act first */
   doActionsBeforeTick();
 
-  /* Poll etimer process */
-  if(etimer_pending()) {
-    etimer_request_poll();
-  }
-
-  /* Let rtimers run.
-   * Sets simProcessRunValue */
-  cooja_mt_exec(&rtimer_thread);
-
   if(simProcessRunValue == 0) {
-    /* Rtimers done: Let Contiki handle a few events.
-     * Sets simProcessRunValue */
     cooja_mt_exec(&process_run_thread);
   }
 
   /* Let all simulation interfaces act before returning to java */
   doActionsAfterTick();
-
-  /* Do we have any pending timers */
-  simEtimerPending = etimer_pending();
-
-  /* Save nearest expiration time */
-  simEtimerNextExpirationTime = etimer_next_expiration_time();
 
 }
 /*---------------------------------------------------------------------------*/

@@ -36,8 +36,6 @@
 #include "sys/cooja_mt.h"
 #include "lib/simEnvChange.h"
 
-#include "net/packetbuf.h"
-#include "net/netstack.h"
 #include "sys/energest.h"
 
 #include "dev/radio.h"
@@ -102,7 +100,6 @@ static int auto_ack = 0; /* AUTO_ACK is not supported; always 0 */
 static int addr_filter = 0; /* ADDRESS_FILTER is not supported; always 0 */
 static int send_on_cca = (COOJA_TRANSMIT_ON_CCA != 0);
 
-PROCESS(cooja_radio_process, "cooja radio process");
 /*---------------------------------------------------------------------------*/
 static void
 set_send_on_cca(uint8_t enable)
@@ -196,7 +193,7 @@ doInterfaceActionsBeforeTick(void)
   }
 
   if(simInSize > 0) {
-    process_poll(&cooja_radio_process);
+    
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -220,10 +217,6 @@ radio_read(void *buf, unsigned short bufsize)
 
   memcpy(buf, simInDataBuffer, simInSize);
   simInSize = 0;
-  if(!poll_mode) {
-    packetbuf_set_attr(PACKETBUF_ATTR_RSSI, radio_signal_strength_last());
-    packetbuf_set_attr(PACKETBUF_ATTR_LINK_QUALITY, radio_lqi_last() );
-  }
 
   return tmp;
 }
@@ -328,34 +321,12 @@ pending_packet(void)
   return !simReceiving && simInSize > 0;
 }
 /*---------------------------------------------------------------------------*/
-PROCESS_THREAD(cooja_radio_process, ev, data)
-{
-  int len;
 
-  PROCESS_BEGIN();
-
-  while(1) {
-    PROCESS_YIELD_UNTIL(ev == PROCESS_EVENT_POLL);
-    if(poll_mode) {
-      continue;
-    }
-
-    packetbuf_clear();
-    len = radio_read(packetbuf_dataptr(), PACKETBUF_SIZE);
-    if(len > 0) {
-      packetbuf_set_datalen(len);
-      NETSTACK_MAC.input();
-    }
-  }
-
-  PROCESS_END();
-}
 /*---------------------------------------------------------------------------*/
 static int
 init(void)
 {
-  process_start(&cooja_radio_process, NULL);
-  return 1;
+  return 0;
 }
 /*---------------------------------------------------------------------------*/
 static radio_result_t

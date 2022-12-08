@@ -34,7 +34,6 @@
 #define RTIMER_ARCH_H_
 
 #include "contiki.h"
-#include "sys/clock.h"
 #include "lib/simEnvChange.h"
 #include "sys/cooja_mt.h"
 
@@ -45,7 +44,6 @@
 #define RTIMERTICKS_TO_US_64(T) (T)
 
 rtimer_clock_t rtimer_arch_now(void);
-int rtimer_arch_check(void);
 int rtimer_arch_pending(void);
 rtimer_clock_t rtimer_arch_next(void);
 
