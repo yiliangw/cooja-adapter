@@ -3,6 +3,10 @@
 # Set CONTIKI to the directory where Makefile.include resides.
 CONTIKI := $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
 
+ifeq ($(TARGET),)
+  TARGET=native
+endif
+
 ### Include a helper Makefile that creates variables for all Contiki-NG path
 ### locations.
 include $(COOJAA)/Makefile.dir-variables
@@ -11,7 +15,6 @@ include $(COOJAA)/Makefile.dir-variables
 # Setting this option is also important for tests on Cooja motes to check for warnings.
 WERROR ?= 1
 
-include $(COOJAA)/Makefile.identify-target
 
 ifeq ($(DEFINES),)
   -include Makefile.$(TARGET).defines
