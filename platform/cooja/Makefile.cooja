@@ -78,7 +78,7 @@ CURDIR := $(shell pwd)
 
 .PHONY: $(MAKECMDGOALS)
 $(MAKECMDGOALS):
-	$(Q)ant -e -logger org.apache.tools.ant.listener.SimpleBigProjectLogger -f $(COOJA_DIR)/build.xml run_bigmem -Dargs="-quickstart=$(addprefix $(CURDIR)/,$(firstword $(MAKECMDGOALS))) -contiki=$(realpath $(CONTIKI)) -logdir=$(CURDIR)"
+	$(Q)ant -e -logger org.apache.tools.ant.listener.SimpleBigProjectLogger -f $(COOJA_DIR)/build.xml run_bigmem -Dargs="-quickstart=$(addprefix $(CURDIR)/,$(firstword $(MAKECMDGOALS))) -contiki=$(realpath $(COOJAA)) -logdir=$(CURDIR)"
 endif
 endif ## QUICKSTART
 

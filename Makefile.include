@@ -5,13 +5,13 @@ CONTIKI := $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
 
 ### Include a helper Makefile that creates variables for all Contiki-NG path
 ### locations.
-include $(CONTIKI)/Makefile.dir-variables
+include $(COOJAA)/Makefile.dir-variables
 
 # Enable Werror by default. To disable from command line, use make WERROR=0.
 # Setting this option is also important for tests on Cooja motes to check for warnings.
 WERROR ?= 1
 
-include $(CONTIKI)/Makefile.identify-target
+include $(COOJAA)/Makefile.identify-target
 
 ifeq ($(DEFINES),)
   -include Makefile.$(TARGET).defines
@@ -69,11 +69,11 @@ ifeq ($(WERROR),1)
  LDFLAGS += $(LDFLAGS_WERROR)
 endif
 
-MODULES += $(CONTIKI_NG_OS_DIR) $(CONTIKI_NG_ARCH_DIR)
-MODULES += $(CONTIKI_NG_SYS_DIR) $(CONTIKI_NG_LIB_DIR) $(CONTIKI_NG_DEV_DIR)
+MODULES += $(COOJAA_ADAPTER_DIR) $(CONTIKI_NG_ARCH_DIR)
+MODULES += $(COOJAA_SYS_DIR) $(COOJAA_LIB_DIR) $(COOJAA_DEV_DIR)
 MODULES += $(CONTIKI_NG_NET_DIR) $(CONTIKI_NG_ROUTING_DIR)
 MODULES += $(CONTIKI_NG_MAC_DIR) $(CONTIKI_NG_MAC_DIR)/framer
-MODULES += $(CONTIKI_NG_STORAGE_DIR) $(CONTIKI_NG_SERVICES_DIR)
+MODULES += $(COOJAA_STORAGE_DIR) $(CONTIKI_NG_SERVICES_DIR)
 
 # Automatically include project-conf.h if found
 ifneq ("$(wildcard project-conf.h)","")
@@ -96,7 +96,7 @@ uniq = $(if $1,$(firstword $1) $(call uniq,$(filter-out $(firstword $1),$1)))
 
 ### Include target makefile (TODO Unsafe?)
 
-target_makefile := $(wildcard $(CONTIKI_NG_RELOC_PLATFORM_DIR)/$(TARGET)/Makefile.$(TARGET) \
+target_makefile := $(wildcard $(COOJAA_PLATFORM_DIR)/$(TARGET)/Makefile.$(TARGET) \
                    $(foreach TDIR, $(TARGETDIRS), $(TDIR)/$(TARGET)/Makefile.$(TARGET)))
 
 # Check if the target makefile exists, and create the object directory if necessary.
@@ -127,19 +127,6 @@ ifneq ("", "$(PLATFORMS_EXCLUDE)")
   endif
 endif
 
-ifneq ($(BOARD),)
-ifneq ("", "$(BOARDS_ONLY)")
-  ifeq ("","$(filter $(BOARD), $(BOARDS_ONLY))")
-    PLATFORM_ACTION = skip
-  endif
-endif
-
-ifneq ("", "$(BOARDS_EXCLUDE)")
-  ifneq ("","$(filter $(BOARD), $(BOARDS_EXCLUDE))")
-    PLATFORM_ACTION = skip
-  endif
-endif
-endif # $(BOARD) not empty
 
 PLATFORM_ACTION ?= build
 
@@ -148,99 +135,8 @@ $(OBJECTDIR) $(DEPDIR):
 	$(TRACE_MKDIR)
 	$(Q)mkdir -p $@
 
-ifneq ($(BOARD),)
-  TARGET_BOARD_UPPERCASE := ${strip ${shell echo $(BOARD) | sed y!$(LOWERCASE)!$(UPPERCASE)!}}
-  CFLAGS += -DCONTIKI_BOARD_$(TARGET_BOARD_UPPERCASE)=1
-  CFLAGS += -DCONTIKI_BOARD_STRING=\"$(BOARD)\"
-endif
 
-# Configure MAC layer
-
-# The different options
-MAKE_MAC_NULLMAC = 0
-MAKE_MAC_CSMA = 1
-MAKE_MAC_TSCH = 2
-MAKE_MAC_BLE = 3
-MAKE_MAC_OTHER = 4
-
-# Make CSMA the default MAC
-MAKE_MAC ?= MAKE_MAC_CSMA
-
-ifeq ($(MAKE_MAC),MAKE_MAC_NULLMAC)
-  MODULES += $(CONTIKI_NG_MAC_DIR)/nullmac
-  CFLAGS += -DMAC_CONF_WITH_NULLMAC=1
-endif
-
-ifeq ($(MAKE_MAC),MAKE_MAC_CSMA)
-  MODULES += $(CONTIKI_NG_MAC_DIR)/csma
-  CFLAGS += -DMAC_CONF_WITH_CSMA=1
-endif
-
-ifeq ($(MAKE_MAC),MAKE_MAC_TSCH)
-  MODULES += $(CONTIKI_NG_MAC_DIR)/tsch
-  CFLAGS += -DMAC_CONF_WITH_TSCH=1
-endif
-
-ifeq ($(MAKE_MAC),MAKE_MAC_BLE)
-  MODULES += $(CONTIKI_NG_MAC_DIR)/ble
-  CFLAGS += -DMAC_CONF_WITH_BLE=1
-endif
-
-ifeq ($(MAKE_MAC),MAKE_MAC_OTHER)
-  CFLAGS += -DMAC_CONF_WITH_OTHER=1
-endif
-
-# Configure Network layer
-
-MAKE_NET_NULLNET = 0
-MAKE_NET_IPV6 = 1
-MAKE_NET_OTHER = 2
-
-# Make IPv6 the default stack
-MAKE_NET ?= MAKE_NET_IPV6
-
-ifeq ($(MAKE_NET),MAKE_NET_NULLNET)
-  CFLAGS += -DNETSTACK_CONF_WITH_NULLNET=1
-  MODULES += $(CONTIKI_NG_NET_DIR)/nullnet
-endif
-
-ifeq ($(MAKE_NET),MAKE_NET_IPV6)
-  CFLAGS += -DNETSTACK_CONF_WITH_IPV6=1
-  MODULES += $(CONTIKI_NG_NET_DIR)/ipv6
-endif
-
-ifeq ($(MAKE_NET),MAKE_NET_OTHER)
-  CFLAGS += -DNETSTACK_CONF_WITH_OTHER=1
-endif
-
-ifeq ($(WITH_IP64),1)
-  MODULES += $(CONTIKI_NG_SERVICES_DIR)/ip64
-endif
-
-# Configure Routing protocol
-MAKE_ROUTING_NULLROUTING = 0
-MAKE_ROUTING_RPL_CLASSIC = 1
-MAKE_ROUTING_RPL_LITE = 2
-
-# Default routing protocol: RPL for IPv6, None otherwise
-ifeq ($(MAKE_NET),MAKE_NET_IPV6)
-MAKE_ROUTING ?= MAKE_ROUTING_RPL_LITE
-else
-MAKE_ROUTING ?= MAKE_ROUTING_NULLROUTING
-endif
-
-ifeq ($(MAKE_ROUTING),MAKE_ROUTING_RPL_CLASSIC)
-  CFLAGS += -DROUTING_CONF_RPL_CLASSIC=1
-  MODULES += $(CONTIKI_NG_ROUTING_DIR)/rpl-classic
-else ifeq ($(MAKE_ROUTING),MAKE_ROUTING_RPL_LITE)
-  CFLAGS += -DROUTING_CONF_RPL_LITE=1
-  MODULES += $(CONTIKI_NG_ROUTING_DIR)/rpl-lite
-else ifeq ($(MAKE_ROUTING),MAKE_ROUTING_NULLROUTING)
-  CFLAGS += -DROUTING_CONF_NULLROUTING=1
-  MODULES += $(CONTIKI_NG_ROUTING_DIR)/nullrouting
-endif
-
-MODULEDIRS = $(MODULES_REL) ${addprefix $(CONTIKI)/, $(MODULES)}
+MODULEDIRS = $(MODULES_REL) ${addprefix $(COOJAA)/, $(MODULES)}
 UNIQUEMODULES = $(call uniq,$(MODULEDIRS))
 MODULES_SOURCES = ${foreach d, $(UNIQUEMODULES), ${subst ${d}/,,${wildcard $(d)/*.c}}}
 CONTIKI_SOURCEFILES += $(filter-out $(MODULES_SOURCES_EXCLUDES), $(MODULES_SOURCES))
@@ -315,7 +211,7 @@ vpath %.cpp $(SOURCEDIRS)
 vpath %.S $(SOURCEDIRS)
 vpath %.s $(SOURCEDIRS)
 
-CFLAGS += ${addprefix -I,$(SOURCEDIRS) $(CONTIKI)}
+CFLAGS += ${addprefix -I,$(SOURCEDIRS) $(COOJAA)}
 
 ### Check for a git repo and pass version if found
 ### git.exe in Windows cmd shells may require no stderr redirection
@@ -342,7 +238,7 @@ clean:
 	$(Q)rm -rf $(BUILD_DIR_TARGET)
 
 distclean:
-	$(Q)for TARG in `ls $(CONTIKI_NG_RELOC_PLATFORM_DIR) $(TARGETDIRS)`; do \
+	$(Q)for TARG in `ls $(COOJAA_PLATFORM_DIR) $(TARGETDIRS)`; do \
 		$(MAKE) TARGET=$$TARG clean; \
 	done
 	$(Q)rm -rf $(BUILD_DIR)
@@ -463,7 +359,7 @@ $(BUILD_DIR_BOARD)/%.$(TARGET): LIBNAME ?= $@
 $(BUILD_DIR_BOARD)/%.$(TARGET): %.o $(PROJECT_OBJECTFILES) $(PROJECT_LIBRARIES) $(CONTIKI_NG_TARGET_LIB)
 ifdef REDEFINE_PRINTF
 	@echo Redefining printf,sprintf,vsnprintf,etc.
-	$(Q)$(foreach OBJ,$^, $(OBJCOPY) --redefine-syms $(CONTIKI)/arch/platform/$(TARGET)/redefine.syms $(OBJ); )
+	$(Q)$(foreach OBJ,$^, $(OBJCOPY) --redefine-syms $(COOJAA)/platform/$(TARGET)/redefine.syms $(OBJ); )
 endif
 	$(TRACE_LD)
 	$(Q)$(LD) $(LDFLAGS) $(TARGET_STARTFILES) ${filter-out %.a,$^} \
@@ -481,14 +377,7 @@ endif
 	$(NM) -S -td --size-sort $< | grep -i " [t] " | cut -d' ' -f2,4
 
 targets:
-	@ls $(CONTIKI_NG_RELOC_PLATFORM_DIR) $(TARGETDIRS)
-
-boards:
-ifdef BOARD
-	@echo "$(BOARDS) (current: $(BOARD))"
-else
-	@echo "Platform has no boards"
-endif
+	@ls $(COOJAA_PLATFORM_DIR) $(TARGETDIRS)
 
 savetarget:
 	@rm -f Makefile.target
@@ -520,28 +409,12 @@ endif
 	@echo "'==' Means the flag is set to a given a value"
 	@echo "'->' Means the flag is unset, but will default to a given value"
 	@echo "'><' Means the flag is unset and has no default value"
-	@echo "To view more Make variables, edit $(CONTIKI)/Makefile.include, rule 'viewconf'"
+	@echo "To view more Make variables, edit $(COOJAA)/Makefile.include, rule 'viewconf'"
 	@echo "To view more C variables, edit $(VIEWCONF)"
 
-###
-### Targets using tools/motelist
-###
-CONTIKI_NG_MOTELIST_DIR = $(CONTIKI_NG_TOOLS_DIR)/motelist
-CONTIKI_NG_MOTELIST = $(CONTIKI_NG_MOTELIST_DIR)/motelist.py
-
-.PHONY: motelist-all
-
-motelist-all:
-	$(Q)$(CONTIKI_NG_MOTELIST)
-
-### Include Makefile.embedded for relevant platforms, in order to pull in
-### rules for login, serialview etc
-ifeq ($(findstring $(TARGET),native cooja),)
-  include $(CONTIKI)/Makefile.embedded
-endif
 
 ### Include Makefile.gcc for GCC specific definitions and actions
-include $(CONTIKI)/Makefile.gcc
+include $(COOJAA)/Makefile.gcc
 
 # Don't treat $(BUILD_DIR_BOARD)/%.$(TARGET) and $(TARGET) as intermediate
 # files because for many platforms they are in fact the primary target.
