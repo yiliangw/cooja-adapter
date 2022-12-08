@@ -28,6 +28,7 @@ COOJA_DIR = $(CONTIKI_NG_TOOLS_DIR)/cooja
 
 # Use dbg-io for IO functions like printf()
 MODULES += os/lib/dbg-io
+MODULES += os/lib/event2
 
 JAVA_INCDIR := $(shell $(JAVA) -XshowSettings:properties -version 2>&1 | grep java.home | awk -F"= " '{print $$2}')
 ifneq ($(MAKECMDGOALS),clean)

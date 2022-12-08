@@ -52,6 +52,9 @@ static int coojaev_dispatch(struct event_base *base, struct timeval *tv)
 {
     #ifdef PLATFORM_NATIVE
 		sleep((unsigned int) tv->tv_sec);
+	#elif defined(PLATFORM_COOJA)
+
 	#endif
+
 	return 0;
 }

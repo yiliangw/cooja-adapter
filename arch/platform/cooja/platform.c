@@ -70,7 +70,6 @@
 #include "dev/gpio-hal.h"
 
 #include "sys/node-id.h"
-#include "services/rpl-border-router/rpl-border-router.h"
 #if BUILD_WITH_ORCHESTRA
 #include "orchestra.h"
 #endif /* BUILD_WITH_ORCHESTRA */
@@ -189,26 +188,11 @@ platform_init_stage_three()
   serial_line_init();
 }
 /*---------------------------------------------------------------------------*/
+extern int umain(void);
 void
 platform_main_loop()
 {
-  while(1)
-  {
-    simProcessRunValue = process_run();
-    while(simProcessRunValue-- > 0) {
-      process_run();
-    }
-    simProcessRunValue = process_nevents();
-
-    /* Check if we must stay awake */
-    if(simDontFallAsleep) {
-      simDontFallAsleep = 0;
-      simProcessRunValue = 1;
-    }
-
-    /* Return to COOJA */
-    cooja_mt_yield();
-  }
+  umain();
 }
 /*---------------------------------------------------------------------------*/
 static void
