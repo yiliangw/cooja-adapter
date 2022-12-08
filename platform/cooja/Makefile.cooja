@@ -7,8 +7,8 @@
 
 EXPECTED_COOJA_VERSION = 2022052601
 
-ifndef CONTIKI
-  $(error CONTIKI not defined!)
+ifndef COOJAA
+  $(error COOJAA not defined!)
 endif
 
 ifdef LIBNAME

@@ -10,7 +10,7 @@ static void timeout_cb(evutil_socket_t fd, short event, void *arg)
     printf("Time: %ld s\n", tv.tv_sec);
 }
 
-int umain()
+int main()
 {
     struct event_base *base;
     struct event timeout;

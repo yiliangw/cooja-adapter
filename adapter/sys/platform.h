@@ -167,43 +167,6 @@ void platform_init_stage_two(void);
  */
 void platform_init_stage_three(void);
 /*---------------------------------------------------------------------------*/
-/**
- * \brief The platform's idle/sleep function
- *
- * This function will be called as part of the main loop after all events
- * have been serviced. This is where you will normally put the device in a
- * low-power state. Waking up from this state and tidying up the hardware
- * is the port's responsibility.
- *
- * It is the port developer's responsibility to implement this function.
- */
-void platform_idle(void);
-/*---------------------------------------------------------------------------*/
-/**
- * \brief The platform's main loop, if provided
- *
- * If the platform developer wishes to do so, it is possible to override the
- * main loop provided by \os's core. To do so, define
- * PLATFORM_CONF_PROVIDES_MAIN_LOOP as 1.
- *
- * It is the port developer's responsibility to implement this function.
- */
-void platform_main_loop(void);
-/*---------------------------------------------------------------------------*/
-/**
- * \brief Allow the platform to process main's command line arguments
- *
- * If the platform wishes main() to accept arguments, then the \os main will
- * call this function here so that the platform can process/store those
- * arguments.
- *
- * This function will only get called if PLATFORM_MAIN_ACCEPTS_ARGS
- * is non-zero.
- *
- * It is the port developer's responsibility to implement this function.
- */
-void platform_process_args(int argc, char**argv);
-/*---------------------------------------------------------------------------*/
 #endif /* PLATFORM_H_ */
 /*---------------------------------------------------------------------------*/
 /**

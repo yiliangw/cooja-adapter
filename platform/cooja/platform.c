@@ -150,13 +150,7 @@ platform_init_stage_three()
   /* Start serial process */
 }
 /*---------------------------------------------------------------------------*/
-extern int umain(void);
-void
-platform_main_loop()
-{
-  umain();
-}
-/*---------------------------------------------------------------------------*/
+int coojaa_main(void);
 static void
 process_run_thread_loop(void *data)
 {
@@ -165,7 +159,7 @@ process_run_thread_loop(void *data)
   cooja_mt_yield();
 
   /* Then call common Contiki-NG main function */
-  main();
+  coojaa_main();
 }
 
 /**

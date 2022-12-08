@@ -14,8 +14,10 @@
 #define LOG_MODULE "Main"
 #define LOG_LEVEL LOG_LEVEL_MAIN
 /*---------------------------------------------------------------------------*/
+int main();
+
 int
-main(void)
+coojaa_main(void)
 {
   platform_init_stage_one();
 
@@ -30,7 +32,7 @@ main(void)
 
   watchdog_start();
 
-  platform_main_loop();
+  main();
 
   return 0;
 }
