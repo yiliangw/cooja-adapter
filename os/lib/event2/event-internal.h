@@ -6,11 +6,14 @@
 #ifndef EVENT_INTERNAL_H_INCLUDED_
 #define EVENT_INTERNAL_H_INCLUDED_
 
-#include "event2/event.h"
+#ifdef CONTIKI_TARGET_NATIVE
+#define PLATFORM_NATIVE
+#endif
+
+#include "event2_/event.h"
 #include "event2_/event_struct.h"
 #include "minheap-internal.h"
 #include "evsignal-internal.h"
-#include "evmap-internal.h"
 
 #include <bits/types/struct_timeval.h>
 #include <sys/queue.h>
@@ -112,13 +115,10 @@ struct event_base {
 };
 
 struct event_config {
-	TAILQ_HEAD(event_configq, event_config_entry) entries;
-
 	int n_cpus_hint;
 	struct timeval max_dispatch_interval;
 	int max_dispatch_callbacks;
 	int limit_callbacks_after_prio;
-	enum event_method_feature require_features;
 	enum event_base_config_flag flags;
 };
 

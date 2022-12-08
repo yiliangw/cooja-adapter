@@ -12,6 +12,7 @@
 
 #include "cooja_config.h"
 
+#include <event2/util.h>
 #include <string.h>
 #include <limits.h>
 
@@ -292,7 +293,6 @@ event_config_new(void)
 	if (cfg == NULL)
 		return (NULL);
 
-	TAILQ_INIT(&cfg->entries);
 	cfg->max_dispatch_interval.tv_sec = -1;
 	cfg->max_dispatch_callbacks = INT_MAX;
 	cfg->limit_callbacks_after_prio = 1;
@@ -305,7 +305,6 @@ extern struct eventop coojaaops;
 struct event_base *
 event_base_new_with_config(const struct event_config *cfg)
 {
-	int i;
 	struct event_base *base;
 
 	if ((base = mm_calloc(1, sizeof(struct event_base))) == NULL) {
@@ -351,7 +350,7 @@ event_base_new_with_config(const struct event_config *cfg)
 	    base->max_dispatch_time.tv_sec == -1)
 		base->limit_callbacks_after_prio = INT_MAX;
 
-	base->evsel = coojaaops;
+	base->evsel = &coojaaops;
 	base->evbase = base->evsel->init(base);
 
 	if (base->evbase == NULL) {
@@ -411,19 +410,21 @@ err:
 	return (r);
 }
 
+void
+event_config_free(struct event_config *cfg)
+{
+	mm_free(cfg);
+}
 
-#define CLOCK_USECOND_RECIPROCAL (1000000 / CLOCK_SECOND)
 /** Set 'tp' to the current time according to 'base'.  We must hold the lock
  * on 'base'.  If there is a cached time, return it.  Otherwise, use
  * clock_gettime or gettimeofday as appropriate to find out the right time.
  * Return 0 on success, -1 on failure.
  */
 static int
-gettime(struct event_base *base, struct timeval *tp)
+gettime(struct event_base *base, struct timeval *tv)
 {
-	tp->tv_sec = clock_seconds();
-	tp->tv_usec = (clock_time() - CLOCK_SECOND * clock_seconds()) * CLOCK_USECOND_RECIPROCAL;
-
+	evutil_gettimeofday(tv, NULL);
 	return 0;
 }
 

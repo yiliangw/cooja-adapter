@@ -36,7 +36,9 @@ struct event_base;
 
 struct event_base *event_base_new(void);
 struct event_config *event_config_new(void);
+void event_config_free(struct event_config *cfg);
 struct event_base *event_base_new_with_config(const struct event_config *cfg);
+int event_base_priority_init(struct event_base *base, int npriorities);
 int event_base_dispatch(struct event_base *event_base);
 int event_base_loop(struct event_base *, int);
 void event_base_free(struct event_base *);
