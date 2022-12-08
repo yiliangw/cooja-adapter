@@ -9,16 +9,10 @@
 # need to prepend $(CONTIKI), as well as relative to the example dir, in which
 # case we do. So we define the variables to suit the former case and we will
 # prepend $(CONTIKI) explicitly where needed.
-CONTIKI_NG_OS_DIR = os
+CONTIKI_NG_OS_DIR = adapter
 CONTIKI_NG_SYS_DIR = $(CONTIKI_NG_OS_DIR)/sys
-CONTIKI_NG_NET_DIR = $(CONTIKI_NG_OS_DIR)/net
-CONTIKI_NG_MAC_DIR = $(CONTIKI_NG_NET_DIR)/mac
-CONTIKI_NG_ROUTING_DIR = $(CONTIKI_NG_NET_DIR)/routing
-CONTIKI_NG_APP_LAYER_DIR = $(CONTIKI_NG_NET_DIR)/app-layer
-CONTIKI_NG_SECURITY_DIR = $(CONTIKI_NG_NET_DIR)/security
 CONTIKI_NG_DEV_DIR = $(CONTIKI_NG_OS_DIR)/dev
 CONTIKI_NG_LIB_DIR = $(CONTIKI_NG_OS_DIR)/lib
-CONTIKI_NG_SERVICES_DIR = $(CONTIKI_NG_OS_DIR)/services
 CONTIKI_NG_STORAGE_DIR = $(CONTIKI_NG_OS_DIR)/storage
 
 # Variables for directories under arch

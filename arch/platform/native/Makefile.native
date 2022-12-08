@@ -22,7 +22,7 @@ else
   ${error Invalid MAKE_CFS configuration: "$(MAKE_CFS)"}
 endif
 
-MODULES += os/lib/event2
+MODULES += adapter/lib/event2
 
 # No stack end symbol available, code does not work on 64-bit architectures.
 MODULES_SOURCES_EXCLUDES += stack-check.c
