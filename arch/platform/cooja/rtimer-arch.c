@@ -79,18 +79,7 @@ rtimer_arch_pending(void)
   return simRtimerPending;
 }
 /*---------------------------------------------------------------------------*/
-int
-rtimer_arch_check(void)
-{
-  if (simRtimerCurrentTicks == simRtimerNextExpirationTime) {
-    /* Execute rtimer */
-    simRtimerPending = 0;
-    rtimer_run_next();
-    return 1;
-  }
-  return 0;
-}
-/*---------------------------------------------------------------------------*/
+
 rtimer_clock_t
 rtimer_arch_now(void)
 {

@@ -5,7 +5,7 @@ endif
 
 CONTIKI_TARGET_DIRS = . dev
 CONTIKI_TARGET_MAIN = ${addprefix $(OBJECTDIR)/,contiki-main.o}
-CONTIKI_TARGET_SOURCEFILES += platform.c clock.c xmem.c buttons.c
+CONTIKI_TARGET_SOURCEFILES += platform.c xmem.c buttons.c
 
 # The different options
 MAKE_CFS_POSIX = 1
@@ -29,12 +29,6 @@ MODULES_SOURCES_EXCLUDES += stack-check.c
 # No Serial Peripheral Interface on Native.
 MODULES_SOURCES_EXCLUDES += spi.c
 
-ifeq ($(HOST_OS),Windows)
-CONTIKI_TARGET_SOURCEFILES += wpcap-drv.c wpcap.c
-TARGET_LIBFILES = /lib/w32api/libws2_32.a /lib/w32api/libiphlpapi.a
-else
-CONTIKI_TARGET_SOURCEFILES += tun6-net.c
-endif
 
 ifeq ($(HOST_OS),Linux)
 TARGET_LIBFILES += -lrt

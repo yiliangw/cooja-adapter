@@ -30,11 +30,9 @@
  */
 /*---------------------------------------------------------------------------*/
 #include "contiki.h"
-#include "dev/button-hal.h"
 
 #include <stdint.h>
 #include <string.h>
 /*---------------------------------------------------------------------------*/
-button_hal_button_t *button_hal_buttons[] = { NULL };
 const uint8_t button_hal_button_count = 0;
 /*---------------------------------------------------------------------------*/

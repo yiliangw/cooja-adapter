@@ -146,42 +146,10 @@ enum {
   RTIMER_ERR_ALREADY_SCHEDULED,
 };
 
-/**
- * \brief      Post a real-time task.
- * \param task A pointer to the task variable allocated somewhere.
- * \param time The time when the task is to be executed.
- * \param duration Unused argument.
- * \param func A function to be called when the task is executed.
- * \param ptr An opaque pointer that will be supplied as an argument to the callback function.
- * \return     RTIMER_OK if the task could be scheduled. Any other value indicates
- *             the task could not be scheduled.
- *
- *             This function schedules a real-time task at a specified
- *             time in the future.
- *
- */
-int rtimer_set(struct rtimer *task, rtimer_clock_t time,
-	       rtimer_clock_t duration, rtimer_callback_t func, void *ptr);
 
-/**
- * \brief      Execute the next real-time task and schedule the next task, if any
- *
- *             This function is called by the architecture dependent
- *             code to execute and schedule the next real-time task.
- *
- */
-void rtimer_run_next(void);
 
-/**
- * \brief      Get the current clock time
- * \return     The current time
- *
- *             This function returns what the real-time module thinks
- *             is the current time. The current time is used to set
- *             the timeouts for real-time tasks.
- *
- * \hideinitializer
- */
+
+
 #define RTIMER_NOW() rtimer_arch_now()
 
 /**

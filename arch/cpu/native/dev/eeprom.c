@@ -39,6 +39,7 @@
 
 #include "contiki.h"
 #include "dev/eeprom.h"
+#include "sys/cc.h"
 
 /* Log configuration */
 #include "sys/log.h"
