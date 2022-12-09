@@ -112,6 +112,12 @@ SENSORS( &pir_sensor, &vib_sensor);
  */
 intptr_t referenceVar;
 
+static int __errno = 0;
+int *__geterrno()
+{
+  return &__errno;
+}
+
 /*
  * Contiki and rtimer threads.
  */

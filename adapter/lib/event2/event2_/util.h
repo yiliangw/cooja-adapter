@@ -75,4 +75,6 @@ int evutil_gettimeofday(struct timeval *tv, struct timezone *tz);
 
 #define evutil_offsetof(type, field) ((off_t)(&((type *)0)->field))
 
+#define evutil_closesocket(sock) ((void) sock)
+
 #endif /* EVENT1_EVUTIL_H_INCLUDED_ */

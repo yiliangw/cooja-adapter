@@ -644,7 +644,7 @@ struct radio_driver {
    * MAC payload, but it will _not_ contain the physical header or the MAC
    * footer (MFR).
    */
-  int (* read)(void *buf, unsigned short buf_len);
+  int (* read)(void *buf, size_t buf_len);
 
   /**
    * Perform a Clear-Channel Assessment (CCA) to find out if there is

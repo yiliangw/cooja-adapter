@@ -203,7 +203,7 @@ doInterfaceActionsAfterTick(void)
 }
 /*---------------------------------------------------------------------------*/
 static int
-radio_read(void *buf, unsigned short bufsize)
+radio_read(void *buf, size_t bufsize)
 {
   int tmp = simInSize;
 
@@ -275,7 +275,7 @@ radio_send(const void *payload, unsigned short payload_len)
     while(simOutSize > 0) {
       cooja_mt_yield();
     }
-
+  
     result = RADIO_TX_OK;
   }
 

@@ -1,4 +1,5 @@
 #include "dev/nullradio.h"
+#include <stddef.h>
 /*---------------------------------------------------------------------------*/
 /*
  * The maximum number of bytes this driver can accept from the MAC layer for
@@ -32,7 +33,7 @@ send(const void *payload, unsigned short payload_len)
 }
 /*---------------------------------------------------------------------------*/
 static int
-radio_read(void *buf, unsigned short buf_len)
+radio_read(void *buf, size_t buf_len)
 {
   return 0;
 }

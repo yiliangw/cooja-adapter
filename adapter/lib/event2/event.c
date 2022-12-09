@@ -33,8 +33,6 @@ static struct event_base *current_base = NULL;
 
 #define EVENT_BASE_ASSERT_LOCKED(base)	assert(base != NULL)	/* Do not support evthread now */
 
-static void *event_self_cbarg_ptr_ = NULL;
-
 static int event_del_(struct event *ev, int blocking);
 
 static int gettime(struct event_base *base, struct timeval *tp);
@@ -51,6 +49,8 @@ static inline void event_signal_closure(struct event_base *base, struct event *e
 static inline void event_persist_closure(struct event_base *base, struct event *ev);
 static void common_timeout_schedule(struct common_timeout_list *ctl,
     const struct timeval *now, struct event *head);
+
+static void *event_self_cbarg_ptr_ = NULL;
 
 /* Prototypes */
 static void	event_queue_insert_active(struct event_base *, struct event_callback *);
@@ -343,8 +343,13 @@ event_config_new(void)
 	return (cfg);
 }
 
-extern struct eventop coojaaops;
+void *
+event_self_cbarg(void)
+{
+	return &event_self_cbarg_ptr_;
+}
 
+extern struct eventop coojaaops;
 struct event_base *
 event_base_new_with_config(const struct event_config *cfg)
 {
@@ -855,6 +860,22 @@ event_callback_to_event(struct event_callback *evcb)
 	return EVUTIL_UPCAST(evcb, struct event, ev_evcallback);
 }
 
+void
+event_active(struct event *ev, int res, short ncalls)
+{
+	if (EVUTIL_FAILURE_CHECK(!ev->ev_base)) {
+		event_warnx("%s: event has no event_base set.", __func__);
+		return;
+	}
+
+	EVBASE_ACQUIRE_LOCK(ev->ev_base, th_base_lock);
+
+	event_debug_assert_is_setup_(ev);
+
+	event_active_nolock_(ev, res, ncalls);
+
+	EVBASE_RELEASE_LOCK(ev->ev_base, th_base_lock);
+}
 
 void
 event_active_nolock_(struct event *ev, int res, short ncalls)
@@ -1319,6 +1340,4 @@ common_timeout_schedule(struct common_timeout_list *ctl,
 	timeout.tv_usec &= MICROSECONDS_MASK;
 	event_add_nolock_(&ctl->timeout_event, &timeout, 1);
 }
-
-
 

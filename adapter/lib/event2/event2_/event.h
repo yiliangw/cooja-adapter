@@ -56,9 +56,13 @@ int event_assign(struct event *, struct event_base *, evutil_socket_t, short, ev
 struct event *event_new(struct event_base *, evutil_socket_t, short, event_callback_fn, void *);
 int event_del(struct event *);
 void event_free(struct event *);
-int event_initialized(const struct event *ev);
 
+void event_active(struct event *ev, int res, short ncalls);
+
+int event_initialized(const struct event *ev);
 int event_pending(const struct event *ev, short events, struct timeval *tv);
+
+void *event_self_cbarg(void);
 
 #define evtimer_assign(ev, b, cb, arg) \
 	event_assign((ev), (b), -1, 0, (cb), (arg))
