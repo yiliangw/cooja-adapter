@@ -283,6 +283,15 @@ event_add(struct event *ev, const struct timeval *tv)
 	return (res);
 }
 
+int
+event_initialized(const struct event *ev)
+{
+	if (!(ev->ev_flags & EVLIST_INIT))
+		return 0;
+
+	return 1;
+}
+
 static int
 timeout_next(struct event_base *base, struct timeval **tv_p)
 {
