@@ -1,10 +1,6 @@
 #ifndef EVENT2_EVENT_H_INCLUDED_
 #define EVENT2_EVENT_H_INCLUDED_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #ifdef CONTIKI_TARGET_NATIVE
 #define PLATFORM_NATIVE
 #elif defined(CONTIKI_TARGET_COOJA)
@@ -51,9 +47,5 @@ void event_base_free(struct event_base *);
 int event_assign(struct event *ev, struct event_base *base, evutil_socket_t fd, short events, 
     void (*callback)(evutil_socket_t, short, void *), void *arg);
 int event_add(struct event *ev, const struct timeval *tv);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* EVENT2_EVENT_H_INCLUDED_ */

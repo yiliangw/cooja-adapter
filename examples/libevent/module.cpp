@@ -1,62 +1,43 @@
-/*
- * Copyright (c) 2020, Institute of Electronics and Computer Science.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the Institute nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE INSTITUTE AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE INSTITUTE OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- */
-
-/**
- * \file
- *         A very simple C++ file to demonstrate how to include C++ code in Contiki-NG projects.
- * \author
- *         Atis Elsts <atis.elsts@edi.lv>
- */
-
-/* prefix all C header files with `extern "C"` */
+/* prefix all C header files from coojaa with `extern "C" */
 extern "C" {
-#include "coojaa.h"
+#include <stdio.h>  /* We should use <stdio.h> rather than <iostream> for logging in cooja simulation */
+#include "event2_/util.h"
+#include <event2_/event.h>
 }
 
-/*---------------------------------------------------------------------------*/
-class cplusplus_class {
-public:
-  uint8_t i;
+static void timeout_cb(evutil_socket_t fd, short event, void *arg);
 
-  cplusplus_class() : i(13) {}
-};
-/*---------------------------------------------------------------------------*/
-uint8_t
-cplusplus_function(void)
+/* Define the entry as extern "C"` since its called from C code */
+extern "C"
+int main()
 {
-  cplusplus_class object;
-  return object.i;
+  struct event_base *base;
+  struct event timeout;
+  struct timeval tv;
+  int flags = EV_PERSIST;
+
+  /* Initialize the event library */
+  base = event_base_new();
+
+  /* Initialize one event */
+  event_assign(&timeout, base, -1, flags, timeout_cb, (void*) &timeout);
+
+  evutil_timerclear(&tv);
+  tv.tv_sec = 1;
+  event_add(&timeout, &tv);
+
+  event_base_dispatch(base);
+
+  printf("done\n");
+
+  event_base_free(base);
+
+  return 0;
 }
-/*---------------------------------------------------------------------------*/
-/* Define the function as `extern "C"` since its called from C code */
-extern "C" uint8_t
-wrapper_function(void)
+
+static void timeout_cb(evutil_socket_t fd, short event, void *arg)
 {
-  return cplusplus_function();
+    struct timeval tv;
+    evutil_gettimeofday(&tv, NULL);
+    printf("Time: %ld s\n", tv.tv_sec);
 }
-/*---------------------------------------------------------------------------*/

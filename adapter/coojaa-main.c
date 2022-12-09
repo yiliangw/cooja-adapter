@@ -14,8 +14,7 @@
 #define LOG_MODULE "Main"
 #define LOG_LEVEL LOG_LEVEL_MAIN
 /*---------------------------------------------------------------------------*/
-int main();
-
+int node_entry(void);
 int
 coojaa_main(void)
 {
@@ -32,7 +31,7 @@ coojaa_main(void)
 
   watchdog_start();
 
-  main();
+  node_entry();
 
   return 0;
 }

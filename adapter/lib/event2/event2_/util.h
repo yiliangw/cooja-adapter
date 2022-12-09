@@ -5,10 +5,6 @@
 #ifndef EVENT2_UTIL_H_INCLUDED_
 #define EVENT2_UTIL_H_INCLUDED_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdint.h>
 #include <bits/types/struct_timeval.h>
 
@@ -78,9 +74,5 @@ int evutil_gettimeofday(struct timeval *tv, struct timezone *tz);
 #define	evutil_timerisset(tvp)	((tvp)->tv_sec || (tvp)->tv_usec)
 
 #define evutil_offsetof(type, field) ((off_t)(&((type *)0)->field))
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* EVENT1_EVUTIL_H_INCLUDED_ */
