@@ -9,10 +9,10 @@ extern "C" {
 
 
 /** Acquire a lock. */
-#define EVLOCK_LOCK(lockvar,mode)
+#define EVLOCK_LOCK(lockvar,mode) do {(void) lockvar; (void) mode; } while (0)
 
 /** Release a lock */
-#define EVLOCK_UNLOCK(lockvar,mode)
+#define EVLOCK_UNLOCK(lockvar,mode) do {(void) lockvar; (void) mode; } while (0)
 
 /** Lock an event_base, if it is set up for locking.  Acquires the lock
     in the base structure whose field is named 'lockvar'. */

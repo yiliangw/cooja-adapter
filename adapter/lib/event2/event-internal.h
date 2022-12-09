@@ -84,6 +84,8 @@ struct event_base {
 	int virtual_event_count;
 	int virtual_event_count_max;
 
+	struct timeval tv_clock_diff;
+
 	int event_count;
 	int event_count_max;
 	int event_count_active;
@@ -108,6 +110,8 @@ struct event_base {
 	int max_dispatch_callbacks;
 	int limit_callbacks_after_prio;
 	struct event_callback *current_event;
+
+	void *th_base_lock;
 };
 
 struct event_config {

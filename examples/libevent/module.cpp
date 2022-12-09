@@ -2,7 +2,8 @@
 extern "C" {
 #include <stdio.h>  /* We should use <stdio.h> rather than <iostream> for logging in cooja simulation */
 #include "event2_/util.h"
-#include <event2_/event.h>
+#include "event2_/event.h"
+#include "event2_/event_struct.h"
 }
 
 static void timeout_cb(evutil_socket_t fd, short event, void *arg);

@@ -8,7 +8,6 @@
 #endif
 
 #include "event2_/util.h"
-#include "event2_/event_struct.h"
 
 #define EVENT_MAX_PRIORITIES 256
 
@@ -35,17 +34,29 @@ enum event_base_config_flag {
 };
 
 struct event_base;
+struct event;
+struct event_config;
+
+typedef void (*event_callback_fn)(evutil_socket_t, short, void *);
 
 struct event_base *event_base_new(void);
+void event_base_free(struct event_base *);
+struct event_base *event_base_new_with_config(const struct event_config *cfg);
+
 struct event_config *event_config_new(void);
 void event_config_free(struct event_config *cfg);
-struct event_base *event_base_new_with_config(const struct event_config *cfg);
+
 int event_base_priority_init(struct event_base *base, int npriorities);
+
 int event_base_dispatch(struct event_base *event_base);
 int event_base_loop(struct event_base *, int);
-void event_base_free(struct event_base *);
-int event_assign(struct event *ev, struct event_base *base, evutil_socket_t fd, short events, 
-    void (*callback)(evutil_socket_t, short, void *), void *arg);
-int event_add(struct event *ev, const struct timeval *tv);
+
+int event_add(struct event *, const struct timeval *);
+int event_assign(struct event *, struct event_base *, evutil_socket_t, short, event_callback_fn, void *);
+struct event *event_new(struct event_base *, evutil_socket_t, short, event_callback_fn, void *);
+int event_del(struct event *);
+void event_free(struct event *);
+
+int event_pending(const struct event *ev, short events, struct timeval *tv);
 
 #endif /* EVENT2_EVENT_H_INCLUDED_ */

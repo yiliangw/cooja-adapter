@@ -35,6 +35,8 @@ static struct event_base *current_base = NULL;
 
 static void *event_self_cbarg_ptr_ = NULL;
 
+static int event_del_(struct event *ev, int blocking);
+
 static int gettime(struct event_base *base, struct timeval *tp);
 static int timeout_next(struct event_base *base, struct timeval **tv_p);
 static int event_haveevents(struct event_base *base);
@@ -61,9 +63,12 @@ static void	event_queue_remove_timeout(struct event_base *, struct event *);
 static void	event_queue_remove_inserted(struct event_base *, struct event *);
 static void event_queue_make_later_events_active(struct event_base *base);
 
-static void event_debug_assert_not_added_(const struct event *ev);
-static void event_debug_assert_socket_nonblocking_(evutil_socket_t fd);
-static void event_debug_note_setup_(const struct event *ev);
+/* Do not support now */
+static void event_debug_assert_not_added_(const struct event *ev) {}
+static void event_debug_assert_socket_nonblocking_(evutil_socket_t fd) {}
+static void event_debug_note_setup_(const struct event *ev) {}
+static void event_debug_note_teardown_(const struct event *ev) {}
+static void event_debug_assert_is_setup_(const struct event *ev) {}
 
 static void insert_common_timeout_inorder(struct common_timeout_list *ctl,
     struct event *ev);
@@ -176,6 +181,36 @@ done:
 	base->running_loop = 0;
 
 	return (retval);
+}
+
+struct event *
+event_new(struct event_base *base, evutil_socket_t fd, short events, void (*cb)(evutil_socket_t, short, void *), void *arg)
+{
+	struct event *ev;
+	ev = mm_malloc(sizeof(struct event));
+	if (ev == NULL)
+		return (NULL);
+	if (event_assign(ev, base, fd, events, cb, arg) < 0) {
+		mm_free(ev);
+		return (NULL);
+	}
+
+	return (ev);
+}
+
+void
+event_free(struct event *ev)
+{
+	event_del(ev);
+	event_debug_note_teardown_(ev);
+	mm_free(ev);
+
+}
+
+int
+event_del(struct event *ev)
+{
+	return event_del_(ev, EVENT_DEL_AUTOBLOCK);
 }
 
 int
@@ -415,11 +450,24 @@ event_config_free(struct event_config *cfg)
 	mm_free(cfg);
 }
 
-/** Set 'tp' to the current time according to 'base'.  We must hold the lock
- * on 'base'.  If there is a cached time, return it.  Otherwise, use
- * clock_gettime or gettimeofday as appropriate to find out the right time.
- * Return 0 on success, -1 on failure.
- */
+static int
+event_del_(struct event *ev, int blocking)
+{
+	int res;
+	struct event_base *base = ev->ev_base;
+
+	if (EVUTIL_FAILURE_CHECK(!base)) {
+		event_warnx("%s: event has no event_base set.", __func__);
+		return -1;
+	}
+
+	EVBASE_ACQUIRE_LOCK(base, th_base_lock);
+	res = event_del_nolock_(ev, blocking);
+	EVBASE_RELEASE_LOCK(base, th_base_lock);
+
+	return (res);
+}
+
 static int
 gettime(struct event_base *base, struct timeval *tv)
 {
@@ -461,16 +509,7 @@ timeout_process(struct event_base *base)
 	}
 }
 
-#ifndef MAX
-#define MAX(a,b) (((a)>(b))?(a):(b))
-#endif
-
 #define MAX_EVENT_COUNT(var, v) var = MAX(var, v)
-
-/* These are a fancy way to spell
-     if (~flags & EVLIST_INTERNAL)
-         base->event_count--/++;
-*/
 #define DECR_EVENT_COUNT(base,flags) \
 	((base)->event_count -= !((flags) & EVLIST_INTERNAL))
 #define INCR_EVENT_COUNT(base,flags) do {					\
@@ -478,11 +517,6 @@ timeout_process(struct event_base *base)
 	MAX_EVENT_COUNT((base)->event_count_max, (base)->event_count);		\
 } while (0)
 
-/** Helper for event_del: always called with th_base_lock held.
- *
- * "blocking" must be one of the EVENT_DEL_{BLOCK, NOBLOCK, AUTOBLOCK,
- * EVEN_IF_FINALIZING} values. See those for more information.
- */
 int
 event_del_nolock_(struct event *ev, int blocking)
 {
@@ -509,7 +543,6 @@ event_del_nolock_(struct event *ev, int blocking)
 
 	EVUTIL_ASSERT(!(ev->ev_flags & ~EVLIST_ALL));
 
-	/* See if we are just active executing this event in a loop */
 	if (ev->ev_events & EV_SIGNAL) {
 		if (ev->ev_ncalls && ev->ev_pncalls) {
 			/* Abort loop */
@@ -518,13 +551,6 @@ event_del_nolock_(struct event *ev, int blocking)
 	}
 
 	if (ev->ev_flags & EVLIST_TIMEOUT) {
-		/* NOTE: We never need to notify the main thread because of a
-		 * deleted timeout event: all that could happen if we don't is
-		 * that the dispatch loop might wake up too early.  But the
-		 * point of notifying the main thread _is_ to wake up the
-		 * dispatch loop early anyway, so we wouldn't gain anything by
-		 * doing it.
-		 */
 		event_queue_remove_timeout(base, ev);
 	}
 
@@ -599,6 +625,41 @@ get_common_timeout_list(struct event_base *base, const struct timeval *tv)
 	return base->common_timeout_queues[COMMON_TIMEOUT_IDX(tv)];
 }
 
+int
+event_pending(const struct event *ev, short event, struct timeval *tv)
+{
+	int flags = 0;
+
+	if (EVUTIL_FAILURE_CHECK(ev->ev_base == NULL)) {
+		event_warnx("%s: event has no event_base set.", __func__);
+		return 0;
+	}
+
+	EVBASE_ACQUIRE_LOCK(ev->ev_base, th_base_lock);
+	event_debug_assert_is_setup_(ev);
+
+	if (ev->ev_flags & EVLIST_INSERTED)
+		flags |= (ev->ev_events & (EV_READ|EV_WRITE|EV_CLOSED|EV_SIGNAL));
+	if (ev->ev_flags & (EVLIST_ACTIVE|EVLIST_ACTIVE_LATER))
+		flags |= ev->ev_res;
+	if (ev->ev_flags & EVLIST_TIMEOUT)
+		flags |= EV_TIMEOUT;
+
+	event &= (EV_TIMEOUT|EV_READ|EV_WRITE|EV_CLOSED|EV_SIGNAL);
+
+	/* See if there is a timeout that we should report */
+	if (tv != NULL && (flags & event & EV_TIMEOUT)) {
+		struct timeval tmp = ev->ev_timeout;
+		tmp.tv_usec &= MICROSECONDS_MASK;
+		/* correctly remamp to real time */
+		evutil_timeradd(&ev->ev_base->tv_clock_diff, &tmp, tv);
+	}
+
+	EVBASE_RELEASE_LOCK(ev->ev_base, th_base_lock);
+
+	return (flags & event);
+}
+
 static void
 event_queue_remove_timeout(struct event_base *base, struct event *ev)
 {
@@ -657,23 +718,6 @@ event_queue_insert_active(struct event_base *base, struct event_callback *evcb)
 	TAILQ_INSERT_TAIL(&base->activequeues[evcb->evcb_pri],
 	    evcb, evcb_active_next);
 }
-
-// static void
-// event_queue_insert_active_later(struct event_base *base, struct event_callback *evcb)
-// {
-// 	EVENT_BASE_ASSERT_LOCKED(base);
-// 	if (evcb->evcb_flags & (EVLIST_ACTIVE_LATER|EVLIST_ACTIVE)) {
-// 		/* Double insertion is possible */
-// 		return;
-// 	}
-
-// 	INCR_EVENT_COUNT(base, evcb->evcb_flags);
-// 	evcb->evcb_flags |= EVLIST_ACTIVE_LATER;
-// 	base->event_count_active++;
-// 	MAX_EVENT_COUNT(base->event_count_active_max, base->event_count_active);
-// 	EVUTIL_ASSERT(evcb->evcb_pri < base->nactivequeues);
-// 	TAILQ_INSERT_TAIL(&base->active_later_queue, evcb, evcb_active_next);
-// }
 
 static void
 event_queue_insert_timeout(struct event_base *base, struct event *ev)
@@ -922,10 +966,6 @@ done:
 	return c;
 }
 
-/* 
- * TODO: Only process available active event available before this tick
- * (or implement other mechanisms) to gurantee timing accuracy in the simulation.
- */
 static int
 event_process_active_single_queue(struct event_base *base,
     struct evcallback_list *activeq,
@@ -1262,8 +1302,6 @@ event_add_nolock_(struct event *ev, const struct timeval *tv,
 	return (res);
 }
 
-/* Add the timeout for the first event in given common timeout list to the
- * event_base's minheap. */
 static void
 common_timeout_schedule(struct common_timeout_list *ctl,
     const struct timeval *now, struct event *head)
@@ -1273,8 +1311,5 @@ common_timeout_schedule(struct common_timeout_list *ctl,
 	event_add_nolock_(&ctl->timeout_event, &timeout, 1);
 }
 
-/* Do not supp*/
-static void event_debug_assert_not_added_(const struct event *ev) {}
-static void event_debug_assert_socket_nonblocking_(evutil_socket_t fd) {}
-static void event_debug_note_setup_(const struct event *ev) {}
+
 
