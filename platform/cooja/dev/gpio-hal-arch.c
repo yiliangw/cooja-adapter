@@ -30,7 +30,7 @@
  */
 /*---------------------------------------------------------------------------*/
 #include "coojaa.h"
-#include "dev/gpio-hal.h"
+#include "coojaa/dev/gpio-hal.h"
 
 #include <string.h>
 #include <stdint.h>

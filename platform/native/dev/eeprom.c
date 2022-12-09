@@ -38,7 +38,7 @@
 #include <string.h>
 
 #include "coojaa.h"
-#include "dev/eeprom.h"
+#include "coojaa/dev/eeprom.h"
 #include "sys/cc.h"
 
 /* Log configuration */

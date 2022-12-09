@@ -28,7 +28,7 @@
  *
  */
 
-#include "dev/ip.h"
+#include "coojaa/dev/ip.h"
 #include "lib/simEnvChange.h"
 
 

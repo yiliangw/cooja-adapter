@@ -33,13 +33,13 @@
 
 #include "coojaa.h"
 
-#include "sys/cooja_mt.h"
+#include "coojaa/sys/cooja_mt.h"
 #include "lib/simEnvChange.h"
 
 #include "sys/energest.h"
 
-#include "dev/radio.h"
-#include "dev/cooja-radio.h"
+#include "coojaa/dev/radio.h"
+#include "coojaa/dev/cooja-radio.h"
 
 /*
  * The maximum number of bytes this driver can accept from the MAC layer for

@@ -1,7 +1,3 @@
-/*
- *
- */
-
 #ifndef EVENT2_UTIL_H_INCLUDED_
 #define EVENT2_UTIL_H_INCLUDED_
 

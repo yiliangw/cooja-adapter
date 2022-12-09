@@ -43,7 +43,7 @@
 #include "coojaa.h"
 #include "sys/cc.h"
 
-#include "sys/cooja_mt.h"
+#include "coojaa/sys/cooja_mt.h"
 
 /*---------------------------------------------------------------------------*/
 /* Log configuration */
@@ -54,13 +54,13 @@
 #include "lib/random.h"
 #include "lib/simEnvChange.h"
 
-#include "dev/eeprom.h"
-#include "dev/cooja-radio.h"
-#include "dev/button-sensor.h"
-#include "dev/pir-sensor.h"
-#include "dev/vib-sensor.h"
-#include "dev/moteid.h"
-#include "dev/gpio-hal.h"
+#include "coojaa/dev/eeprom.h"
+#include "coojaa/dev/cooja-radio.h"
+#include "coojaa/dev/button-sensor.h"
+#include "coojaa/dev/pir-sensor.h"
+#include "coojaa/dev/vib-sensor.h"
+#include "coojaa/dev/moteid.h"
+#include "coojaa/dev/gpio-hal.h"
 
 #include "sys/node-id.h"
 #if BUILD_WITH_ORCHESTRA

@@ -35,7 +35,7 @@
 #include <stddef.h>
 
 #include "sys/rtimer.h"
-#include "sys/cooja_mt.h"
+#include "coojaa/sys/cooja_mt.h"
 
 #include "lib/simEnvChange.h"
 

@@ -31,9 +31,9 @@
  */
 
  /* Dummy watchdog routines for Cooja motes */
-#include "dev/watchdog.h"
+#include "coojaa/dev/watchdog.h"
 #include "lib/simEnvChange.h"
-#include "sys/cooja_mt.h"
+#include "coojaa/sys/cooja_mt.h"
 
 /*---------------------------------------------------------------------------*/
 void

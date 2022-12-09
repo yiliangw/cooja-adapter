@@ -28,7 +28,7 @@
  *
  */
 
-#include "dev/vib-sensor.h"
+#include "coojaa/dev/vib-sensor.h"
 #include "lib/simEnvChange.h"
 
 const struct simInterface vib_interface;

@@ -3,7 +3,7 @@
 #include "sys/platform.h"
 #include "sys/energest.h"
 #include "sys/stack-check.h"
-#include "dev/watchdog.h"
+#include "coojaa/dev/watchdog.h"
 
 
 #include <stdio.h>

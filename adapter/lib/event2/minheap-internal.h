@@ -1,8 +1,8 @@
 #ifndef MINHEAP_INTERNAL_H_INCLUDED_
 #define MINHEAP_INTERNAL_H_INCLUDED_
 
-#include "event2_/event_struct.h"
-#include "event2_/util.h"
+#include "coojaa/event2/event_struct.h"
+#include "coojaa/event2/util.h"
 
 #include "mm-internal.h"
 

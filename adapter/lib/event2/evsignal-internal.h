@@ -1,7 +1,7 @@
 #ifndef EVSIGNAL_INTERNAL_H_INCLUDED_
 #define EVSIGNAL_INTERNAL_H_INCLUDED_
 
-#include "event2_/event_struct.h"
+#include "coojaa/event2/event_struct.h"
 
 struct evsig_info {
 	struct event ev_signal;

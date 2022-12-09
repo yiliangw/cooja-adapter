@@ -1,7 +1,7 @@
 #ifndef EVMAP_INTERNAL_H_INCLUDED_
 #define EVMAP_INTERNAL_H_INCLUDED_
 
-#include "event2_/event_struct.h"
+#include "coojaa/event2/event_struct.h"
 #include "event-internal.h"
 
 struct event_base;

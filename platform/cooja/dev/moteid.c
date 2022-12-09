@@ -28,7 +28,7 @@
  *
  */
 
-#include "dev/moteid.h"
+#include "coojaa/dev/moteid.h"
 #include "lib/simEnvChange.h"
 #include "lib/random.h"
 

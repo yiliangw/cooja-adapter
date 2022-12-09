@@ -4,7 +4,7 @@
 #include "lib/assert.h"
 #include "sys/rtimer.h"
 
-#include "event2_/util.h"
+#include "coojaa/event2/util.h"
 
 #include <bits/types/struct_timeval.h>
 

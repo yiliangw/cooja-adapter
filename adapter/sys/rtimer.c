@@ -46,7 +46,7 @@
 #include "sys/rtimer.h"
 #include "coojaa.h"
 #include "rtimer-arch.h"
-#include "cc.h"
+#include "sys/cc.h"
 
 #define DEBUG 0
 #if DEBUG

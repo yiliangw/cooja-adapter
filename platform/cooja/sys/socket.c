@@ -1,7 +1,6 @@
-#include "sys/socket.h"
-#include "sys/errno.h"
-#include "dev/cooja-radio.h"
-#include "errno.h"
+#include "coojaa/sys/socket.h"
+#include <errno.h>
+#include "coojaa/dev/cooja-radio.h"
 
 static const int radio_sock = 1209;
 

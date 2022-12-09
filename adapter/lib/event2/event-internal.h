@@ -6,8 +6,8 @@
 #ifndef EVENT_INTERNAL_H_INCLUDED_
 #define EVENT_INTERNAL_H_INCLUDED_
 
-#include "event2_/event.h"
-#include "event2_/event_struct.h"
+#include "coojaa/event2/event.h"
+#include "coojaa/event2/event_struct.h"
 #include "minheap-internal.h"
 #include "evsignal-internal.h"
 

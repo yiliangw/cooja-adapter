@@ -2,14 +2,14 @@
  * Cooja adapter libevent backend
  */
 #include "event-internal.h"
-#include "rtimer.h"
+#include "sys/rtimer.h"
 #include "util-internal.h"
 #include "log-internal.h"
 
 #ifdef PLATFORM_NATIVE
 #include <unistd.h>
 #elif defined(PLATFORM_COOJA)
-#include "sys/cooja_mt.h"
+#include "coojaa/sys/cooja_mt.h"
 #include "lib/simEnvChange.h"
 #endif
 

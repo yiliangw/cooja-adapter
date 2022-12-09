@@ -33,7 +33,7 @@
  */
 
 #include "coojaa.h"
-#include "dev/xmem.h"
+#include "coojaa/dev/xmem.h"
 
 #include <stdio.h>
 #include <fcntl.h>

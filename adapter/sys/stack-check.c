@@ -42,7 +42,7 @@
 
 #include "coojaa.h"
 #include "sys/stack-check.h"
-#include "dev/watchdog.h"
+#include "coojaa/dev/watchdog.h"
 #include <string.h>
 #include <inttypes.h>
 

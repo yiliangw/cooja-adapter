@@ -1,7 +1,7 @@
 #ifndef CHANGELIST_INTERNAL_H_INCLUDED_
 #define CHANGELIST_INTERNAL_H_INCLUDED_
 
-#include "event2_/util.h"
+#include "coojaa/event2/util.h"
 
 struct event_change {
 	evutil_socket_t fd;

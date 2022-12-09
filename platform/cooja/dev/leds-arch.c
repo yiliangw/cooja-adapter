@@ -29,7 +29,7 @@
  *
  */
 /*-----------------------------------------------------------------------------------*/
-#include "dev/leds.h"
+#include "coojaa/dev/leds.h"
 #include "lib/simEnvChange.h"
 /*-----------------------------------------------------------------------------------*/
 /* Variables required by the Cooja button interface */

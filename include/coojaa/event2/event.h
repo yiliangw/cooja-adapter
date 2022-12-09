@@ -7,7 +7,7 @@
 #define PLATFORM_COOJA
 #endif
 
-#include "event2_/util.h"
+#include "coojaa/event2/util.h"
 
 #define EVENT_MAX_PRIORITIES 256
 

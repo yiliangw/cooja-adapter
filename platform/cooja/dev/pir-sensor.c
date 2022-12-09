@@ -28,7 +28,7 @@
  *
  */
 
-#include "dev/pir-sensor.h"
+#include "coojaa/dev/pir-sensor.h"
 #include "lib/simEnvChange.h"
 
 const struct simInterface pir_interface;

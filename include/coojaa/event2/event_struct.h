@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include "event2_/util.h"
+#include "coojaa/event2/util.h"
 
 #include <bits/types/struct_timeval.h>
 #include <sys/queue.h>

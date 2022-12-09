@@ -34,7 +34,7 @@
 #define COOJA_RADIO_H_
 
 #include "coojaa.h"
-#include "dev/radio.h"
+#include "coojaa/dev/radio.h"
 
 #ifdef COOJA_CONF_SIMULATE_TURNAROUND
 #define COOJA_SIMULATE_TURNAROUND COOJA_CONF_SIMULATE_TURNAROUND

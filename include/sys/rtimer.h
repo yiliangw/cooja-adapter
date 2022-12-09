@@ -54,7 +54,7 @@
 #define RTIMER_H_
 
 #include "coojaa.h"
-#include "dev/watchdog.h"
+#include "coojaa/dev/watchdog.h"
 #include <stdbool.h>
 
 /*---------------------------------------------------------------------------*/

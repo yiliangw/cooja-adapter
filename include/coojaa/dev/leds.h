@@ -103,7 +103,7 @@
 #define LEDS_H_
 /*---------------------------------------------------------------------------*/
 #include "coojaa.h"
-#include "dev/gpio-hal.h"
+#include "coojaa/dev/gpio-hal.h"
 
 #include <stdint.h>
 #include <stdbool.h>

@@ -39,8 +39,8 @@
  */
 /*---------------------------------------------------------------------------*/
 #include "coojaa.h"
-#include "dev/gpio-hal.h"
-#include "dev/leds.h"
+#include "coojaa/dev/gpio-hal.h"
+#include "coojaa/dev/leds.h"
 
 #include <stdint.h>
 #include <stdbool.h>

@@ -115,6 +115,8 @@ else
   endif
 endif
 
+CFLAGS += -I$(COOJAA_PLATFORM_DIR)/$(TARGET)/include
+
 CP ?= cp
 
 # Decide whether to build or to skip this target for this platform
@@ -214,7 +216,7 @@ vpath %.cpp $(SOURCEDIRS)
 vpath %.S $(SOURCEDIRS)
 vpath %.s $(SOURCEDIRS)
 
-CFLAGS += ${addprefix -I,$(SOURCEDIRS) $(COOJAA)}
+CFLAGS += -I$(COOJAA)/include
 
 ### Check for a git repo and pass version if found
 ### git.exe in Windows cmd shells may require no stderr redirection

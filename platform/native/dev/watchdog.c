@@ -30,7 +30,7 @@
  *
  */
 
-#include "dev/watchdog.h"
+#include "coojaa/dev/watchdog.h"
 #include <stdlib.h>
 
 /*---------------------------------------------------------------------------*/
