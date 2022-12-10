@@ -64,10 +64,6 @@ typedef unsigned int uip_stats_t;
 #define UIP_CONF_BYTE_ORDER      UIP_LITTLE_ENDIAN
 #endif
 
-#ifndef NETSTACK_CONF_RADIO
-#define NETSTACK_CONF_RADIO   nullradio_driver
-#endif /* NETSTACK_CONF_RADIO */
-
 #define NETSTACK_CONF_LINUXRADIO_DEV "wpan0"
 
 #include <ctype.h>

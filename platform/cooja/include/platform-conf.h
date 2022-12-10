@@ -56,8 +56,6 @@
 
 #define w_memcpy memcpy
 
-/* Radio setup */
-#define NETSTACK_CONF_RADIO cooja_radio_driver
 
 #define CC_CONF_VA_ARGS                1
 #define CC_CONF_INLINE inline

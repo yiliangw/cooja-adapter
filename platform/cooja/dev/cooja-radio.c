@@ -28,6 +28,9 @@
  *
  */
 
+#include "platform/dev/radio.h"
+#include "coojaa/dev/radio.h"
+
 #include <stdio.h>
 #include <string.h>
 
@@ -37,9 +40,6 @@
 #include "lib/simEnvChange.h"
 
 #include "sys/energest.h"
-
-#include "coojaa/dev/radio.h"
-#include "coojaa/dev/cooja-radio.h"
 
 /*
  * The maximum number of bytes this driver can accept from the MAC layer for
@@ -434,7 +434,7 @@ set_object(radio_param_t param, const void *src, size_t size)
   return RADIO_RESULT_NOT_SUPPORTED;
 }
 /*---------------------------------------------------------------------------*/
-const struct radio_driver cooja_radio_driver =
+const struct radio_driver cooja_radio_driver_ =
 {
     init,
     prepare_packet,
@@ -451,6 +451,10 @@ const struct radio_driver cooja_radio_driver =
     get_object,
     set_object
 };
+
+const struct radio_driver *cooja_radio_driver = &cooja_radio_driver_;
+const struct radio_driver *platform_radio_driver = &cooja_radio_driver_;
+
 /*---------------------------------------------------------------------------*/
 SIM_INTERFACE(radio_interface,
               doInterfaceActionsBeforeTick,

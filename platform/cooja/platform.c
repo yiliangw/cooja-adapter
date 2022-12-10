@@ -55,7 +55,6 @@
 #include "lib/simEnvChange.h"
 
 #include "coojaa/dev/eeprom.h"
-#include "coojaa/dev/cooja-radio.h"
 #include "coojaa/dev/button-sensor.h"
 #include "coojaa/dev/pir-sensor.h"
 #include "coojaa/dev/vib-sensor.h"

@@ -59,6 +59,8 @@
 
 #include <stddef.h>
 
+extern const struct radio_driver *radio_driver;
+
 /**
  * Each radio has a set of parameters that designate the current
  * configuration and state of the radio. Parameters can either have
@@ -779,6 +781,8 @@ struct radio_driver {
   radio_result_t (* set_object)(radio_param_t param, const void *src,
                                 size_t size);
 };
+
+
 /** @} */
 /*---------------------------------------------------------------------------*/
 #endif /* RADIO_H_ */
