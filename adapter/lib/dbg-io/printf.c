@@ -34,7 +34,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <strformat.h>
+#include "strformat.h"
 /*---------------------------------------------------------------------------*/
 static strformat_result
 write_str(void *user_data, const char *data, unsigned int len)

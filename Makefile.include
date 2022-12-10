@@ -115,7 +115,9 @@ else
   endif
 endif
 
+CFLAGS += -I$(COOJAA_PLATFORM_DIR)/include
 CFLAGS += -I$(COOJAA_PLATFORM_DIR)/$(TARGET)/include
+
 
 CP ?= cp
 

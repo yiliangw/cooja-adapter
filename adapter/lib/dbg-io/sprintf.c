@@ -32,7 +32,7 @@
 #include "coojaa.h"
 
 #include <stdio.h>
-#include <strformat.h>
+#include "strformat.h"
 #include <string.h>
 #undef sprintf
 /*---------------------------------------------------------------------------*/
