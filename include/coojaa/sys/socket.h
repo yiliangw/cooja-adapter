@@ -4,6 +4,19 @@
 #include <bits/sockaddr.h>
 #include <sys/types.h>
 
+enum coojaa_scoket {
+  COOJAA_SOCKET_MIN = 100,
+  RADIO_SOCKET,
+  COOJAA_SOCKET_MAX
+};
+
+#define COOJAA_SOCKET_NUM (COOJAA_SOCKET_MAX - COOJAA_SOCKET_MIN - 1)
+
+static inline int valid_coojaa_socket(int fd)
+{
+  return (fd > COOJAA_SOCKET_MIN) && (fd < COOJAA_SOCKET_MAX); 
+}
+
 struct sockaddr
   {
     __SOCKADDR_COMMON (sa_);	/* Common data: address family and length.  */

@@ -6,6 +6,10 @@
 #include "coojaa.h"
 #include "coojaa/dev/radio.h"
 
+#define FOO_RADIO_BUFSIZE    128
+static int have_packet = 0;
+static char foo_radio_buffer[FOO_RADIO_BUFSIZE];
+
 static int init(void);
 static int prepare_packet(const void *payload, unsigned short payload_len);
 static int transmit_packet(unsigned short transmit_len);
@@ -41,6 +45,17 @@ const struct radio_driver foo_radio_driver_ =
 const struct radio_driver *foo_radio_driver = &foo_radio_driver_;
 const struct radio_driver *platform_radio_driver = &foo_radio_driver_;
 
+/* To act as if a new packet is received. */
+int foo_radio_new_packet(const void *payload, unsigned short payload_len)
+{
+    if (have_packet)
+        return -1;
+
+    memcpy(foo_radio_buffer, payload, payload_len);
+    have_packet = 1;
+    return 0;
+}
+
 static int init(void)
  {
     return 0;
@@ -58,7 +73,8 @@ static int transmit_packet(unsigned short transmit_len)
 
 static int radio_send(const void *payload, unsigned short payload_len)
 {
-    return 0;
+    printf("Message sent: %s\n", (char*) payload);
+    return RADIO_TX_OK;
 }
 
 static int radio_read(void *buf, size_t buf_len)

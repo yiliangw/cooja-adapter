@@ -21,11 +21,11 @@
 	printf("\n"); \
 } while(0)
 
-#define event_debugx_(...) __debug(__VA_ARGS__)
-
-#define event_warnx(...)		__warn(__VA_ARGS__)
-#define event_errx(eval, ...)	__error(__VA_ARGS__)
-#define event_warn(...)			__warn(__VA_ARGS__)
+#define event_err(eval, ...)		__error(__VA_ARGS__)
+#define event_errx(eval, ...)		event_err(eval, __VA_ARGS__)
+#define event_warn(...)				__warn(__VA_ARGS__)
+#define event_warnx(...)			event_warn(__VA_ARGS__)
+#define event_debugx_(...) 			__debug(__VA_ARGS__)
 #define event_debug(x) do {	\
 	event_debugx_ x;		\
 } while (0)

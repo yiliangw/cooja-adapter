@@ -5,4 +5,6 @@ struct radio_driver;
 extern const struct radio_driver *foo_radio_driver;
 extern const struct radio_driver *platform_radio_driver;
 
+int foo_radio_new_packet(const void *payload, unsigned short payload_len);
+
 #endif /* COOJAA_PLATFORM_RADIO_H_ */

@@ -1,8 +1,6 @@
 #include "platform/event2.h"
 
-#include "../../adapter/lib/event2/event-internal.h"
-#include "../../adapter/lib/event2/util-internal.h"
-#include "../../adapter/lib/event2/log-internal.h"
+#include "platform/dev/radio.h"
 
 #include <unistd.h>
 
