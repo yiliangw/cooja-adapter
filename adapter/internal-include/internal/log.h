@@ -48,8 +48,8 @@
  *
  */
 
-#ifndef _LOG_H__
-#define _LOG_H__
+#ifndef _LOG_H_
+#define _LOG_H_
 
 #include <stdio.h>
 #include "internal/log-conf.h"
@@ -104,11 +104,17 @@ struct log_module {
 
 extern int curr_log_level_main;
 extern int curr_log_level_libevent;
+extern int curr_log_level_radio;
 
 extern struct log_module all_modules[];
 
+#ifndef MIN
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
+#endif
+
 #define LOG_LEVEL_MAIN                        MIN((LOG_CONF_LEVEL_MAIN), curr_log_level_main)
 #define LOG_LEVEL_LIBEVENT                    MIN((LOG_CONF_LEVEL_LIBEVENT), curr_log_level_libevent)
+#define LOG_LEVEL_RADIO                       MIN((LOG_CONF_LEVEL_RADIO), curr_log_level_radio)
 
 /* Main log function */
 
@@ -206,7 +212,7 @@ int log_get_level(const char *module);
 */
 const char *log_level_to_str(int level);
 
-#endif /* _LOG_H__ */
+#endif /* _LOG_H_ */
 
 /** @} */
 /** @} */

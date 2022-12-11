@@ -6,6 +6,13 @@
 #include "coojaa.h"
 #include "coojaa/dev/radio.h"
 
+/*---------------------------------------------------------------------------*/
+/* Log configuration for foo-radio */
+#include "internal/log.h"
+#define LOG_MODULE "radio"
+#define LOG_LEVEL LOG_LEVEL_RADIO
+/*---------------------------------------------------------------------------*/
+
 static int have_packet = 0;
 static int send_available = 0;
 static char foo_radio_buffer[FOO_RADIO_BUFSIZE];
@@ -46,16 +53,21 @@ const struct radio_driver foo_radio_driver =
 /* To act as if a new packet is received. */
 int foo_radio_new_packet(const void *payload, unsigned short payload_len)
 {
-    if (have_packet)
+    if (have_packet) {
+        LOG_INFO("Ignored a new packet because there is one not having been processed\n");
         return -1;
+    }
 
     memcpy(foo_radio_buffer, payload, payload_len);
     have_packet = 1;
+    LOG_INFO("Received a new packet (length = %d)\n", payload_len);
+
     return 0;
 }
 
 void foo_radio_send_available()
 {
+    LOG_INFO("The radio is ready for sending a packet\n");
     send_available = 1;
 }
 
@@ -76,18 +88,20 @@ static int transmit_packet(unsigned short transmit_len)
 
 static int radio_send(const void *payload, unsigned short payload_len)
 {
-    printf("Message sent: %s\n", (char*) payload);
+    LOG_INFO("Sent a packet (length = %d)", payload_len);
     return RADIO_TX_OK;
 }
 
 static int radio_read(void *buf, size_t buf_len)
 {
-    if (!have_packet)
+    if (!have_packet) {
+        LOG_WARN("Tried to read the radio when there is not a available packet\n");
         return 0;
+    }
 
     int len = strnlen(foo_radio_buffer, FOO_RADIO_BUFSIZE);
     if (buf_len < len) {
-        printf("Buffer too small\n");
+        LOG_WARN("The buffer is too small for the packet\n");
         return 0;
     }
 

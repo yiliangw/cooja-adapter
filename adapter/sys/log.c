@@ -55,10 +55,12 @@
 
 int curr_log_level_main = LOG_CONF_LEVEL_MAIN;
 int curr_log_level_libevent = LOG_CONF_LEVEL_LIBEVENT;
+int curr_log_level_radio = LOG_CONF_LEVEL_RADIO;
 
 struct log_module all_modules[] = {
   {"main", &curr_log_level_main, LOG_CONF_LEVEL_MAIN},
   {"libevent", &curr_log_level_libevent, LOG_CONF_LEVEL_LIBEVENT},
+  {"radio", &curr_log_level_radio, LOG_CONF_LEVEL_RADIO},
   {NULL, NULL, 0},
 };
 
@@ -74,9 +76,7 @@ log_bytes(const void *data, size_t length)
   }
 }
 /*---------------------------------------------------------------------------*/
-#ifndef MIN
-#define MIN(x, y) (((x) < (y)) ? (x) : (y))
-#endif
+
 void
 log_set_level(const char *module, int level)
 {
