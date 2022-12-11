@@ -35,7 +35,7 @@
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
-#include "coojaa/sys/cooja_mt.h"
+#include "platform/cooja_mt.h"
 
 #if INTPTR_MAX == INT32_MAX
 #define ON_64BIT_ARCH 0

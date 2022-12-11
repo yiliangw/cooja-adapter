@@ -29,7 +29,7 @@
  */
 
 #include "coojaa/dev/beep.h"
-#include "lib/simEnvChange.h"
+#include "platform/simEnvChange.h"
 
 const struct simInterface beep_interface;
 

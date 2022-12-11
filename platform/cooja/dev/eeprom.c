@@ -31,7 +31,7 @@
 #include <string.h>
 #include "coojaa/dev/eeprom.h"
 
-#include "lib/simEnvChange.h"
+#include "platform/simEnvChange.h"
 
 const struct simInterface eeprom_interface;
 

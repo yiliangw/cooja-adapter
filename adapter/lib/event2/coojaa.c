@@ -41,7 +41,7 @@ static int
 coojaa_add(struct event_base *base, int fd, short old, short events, void *p)
 {	
 	struct coojaaop *cop = base->evbase;
-	int idx = fd_to_index_(fd);
+	int idx = fd_to_index(fd);
 
 	(void) p;
 
@@ -52,10 +52,10 @@ coojaa_add(struct event_base *base, int fd, short old, short events, void *p)
 	}
 
 	if (events & EV_READ)
-		cop->socket_in[idx] = true;
+		cop->fd_in[idx] = true;
 
 	if (events & EV_WRITE)
-		cop->socket_out[idx] = true;
+		cop->fd_out[idx] = true;
 
 	return 0;
 }
@@ -63,7 +63,7 @@ coojaa_add(struct event_base *base, int fd, short old, short events, void *p)
 static int coojaa_del(struct event_base *base , int fd, short old, short events, void*p)
 {
 	struct coojaaop *cop = base->evbase;
-	int idx = fd_to_index_(fd);
+	int idx = fd_to_index(fd);
 
 	(void) p;
 
@@ -73,10 +73,10 @@ static int coojaa_del(struct event_base *base , int fd, short old, short events,
 	}
 
 	if (events & EV_READ)
-		cop->socket_in[idx] = false;
+		cop->fd_in[idx] = false;
 		
 	if (events & EV_WRITE)
-		cop->socket_out[idx] = false;
+		cop->fd_out[idx] = false;
 
 	return 0;
 }

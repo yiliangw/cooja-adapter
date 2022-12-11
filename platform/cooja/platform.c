@@ -43,7 +43,7 @@
 #include "coojaa.h"
 #include "sys/cc.h"
 
-#include "coojaa/sys/cooja_mt.h"
+#include "platform/cooja_mt.h"
 
 /*---------------------------------------------------------------------------*/
 /* Log configuration */
@@ -52,7 +52,7 @@
 #define LOG_LEVEL LOG_LEVEL_MAIN
 
 #include "lib/random.h"
-#include "lib/simEnvChange.h"
+#include "platform/simEnvChange.h"
 
 #include "coojaa/dev/eeprom.h"
 #include "coojaa/dev/button-sensor.h"

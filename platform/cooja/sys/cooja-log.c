@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
-#include "lib/simEnvChange.h"
+#include "platform/simEnvChange.h"
 
 #ifndef MAX_LOG_LENGTH
 #define MAX_LOG_LENGTH 8192

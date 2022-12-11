@@ -34,8 +34,8 @@
 #define RTIMER_ARCH_H_
 
 #include "coojaa.h"
-#include "lib/simEnvChange.h"
-#include "coojaa/sys/cooja_mt.h"
+#include "platform/simEnvChange.h"
+#include "platform/cooja_mt.h"
 
 #define RTIMER_ARCH_SECOND UINT64_C(1000000)
 

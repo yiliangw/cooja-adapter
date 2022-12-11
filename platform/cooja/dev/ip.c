@@ -29,7 +29,7 @@
  */
 
 #include "coojaa/dev/ip.h"
-#include "lib/simEnvChange.h"
+#include "platform/simEnvChange.h"
 
 
 const struct simInterface ip_interface;

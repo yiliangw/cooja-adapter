@@ -16,17 +16,17 @@ int platform_coojaa_dispatch(struct event_base *base, struct timeval *tv)
     struct coojaaop *cop = base->evbase;
     fd_set outset, inset;
     int res;
-    const int radioidx = fd_to_index_(RADIO_FD);
+    const int radioidx = fd_to_index(RADIO_FD);
     const int maxfd = MAX(STDIN_FILENO, STDOUT_FILENO);
     
     FD_ZERO(&outset);
     FD_ZERO(&inset);
 
     /* We use stdin and stdout to simulate radio input and output */
-    if (cop->socket_in[radioidx])   
+    if (cop->fd_in[radioidx])   
         FD_SET(STDIN_FILENO, &inset);
 
-    if (cop->socket_out[radioidx])
+    if (cop->fd_out[radioidx])
         FD_SET(STDOUT_FILENO, &outset);
 
     select(maxfd+1, &inset, &outset, NULL, tv);

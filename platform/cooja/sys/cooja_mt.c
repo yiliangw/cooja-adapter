@@ -37,7 +37,7 @@
  */
 
 #include "coojaa.h"
-#include "coojaa/sys/cooja_mt.h"
+#include "platform/cooja_mt.h"
 #include "sys/cc.h"
 
 #define MT_STATE_READY   1

@@ -30,7 +30,7 @@
 
 #include "lib/sensors.h"
 #include "coojaa/dev/rs232.h"
-#include "lib/simEnvChange.h"
+#include "platform/simEnvChange.h"
 #include <string.h>
 #include <stdio.h>
 

@@ -28,7 +28,7 @@
  *
  */
 
-#include "lib/simEnvChange.h"
+#include "platform/simEnvChange.h"
 
 #include <stdio.h>
 #include <string.h>

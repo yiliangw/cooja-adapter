@@ -31,7 +31,7 @@
  */
 #include <stdio.h>
 #include <string.h>
-#include "lib/simEnvChange.h"
+#include "platform/simEnvChange.h"
 #include "cfs/cfs.h"
 
 #define FLAG_FILE_CLOSED 0

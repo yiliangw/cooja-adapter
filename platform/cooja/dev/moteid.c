@@ -29,7 +29,7 @@
  */
 
 #include "coojaa/dev/moteid.h"
-#include "lib/simEnvChange.h"
+#include "platform/simEnvChange.h"
 #include "lib/random.h"
 
 const struct simInterface moteid_interface;

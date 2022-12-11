@@ -29,7 +29,7 @@
  */
 
 #include "coojaa.h"
-#include "lib/simEnvChange.h"
+#include "platform/simEnvChange.h"
 
 const struct simInterface clock_interface;
 

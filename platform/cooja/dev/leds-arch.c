@@ -30,7 +30,7 @@
  */
 /*-----------------------------------------------------------------------------------*/
 #include "coojaa/dev/leds.h"
-#include "lib/simEnvChange.h"
+#include "platform/simEnvChange.h"
 /*-----------------------------------------------------------------------------------*/
 /* Variables required by the Cooja button interface */
 leds_mask_t simLedsValue = 0;

@@ -17,6 +17,12 @@ extern const struct radio_driver cooja_radio_driver;
 #define COOJA_TRANSMIT_ON_CCA 1
 #endif
 
+int
+radio_send_prepared();
+
+int
+radio_read_prepared();
+
 
 /**
  * Set radio channel.

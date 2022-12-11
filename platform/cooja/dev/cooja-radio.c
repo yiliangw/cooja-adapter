@@ -36,8 +36,8 @@
 
 #include "coojaa.h"
 
-#include "coojaa/sys/cooja_mt.h"
-#include "lib/simEnvChange.h"
+#include "platform/cooja_mt.h"
+#include "platform/simEnvChange.h"
 
 #include "sys/energest.h"
 
@@ -100,6 +100,19 @@ static int auto_ack = 0; /* AUTO_ACK is not supported; always 0 */
 static int addr_filter = 0; /* ADDRESS_FILTER is not supported; always 0 */
 static int send_on_cca = (COOJA_TRANSMIT_ON_CCA != 0);
 
+
+/*---------------------------------------------------------------------------*/
+int
+radio_send_prepared()
+{
+  return simOutSize == 0;
+}
+/*---------------------------------------------------------------------------*/
+int
+radio_read_prepared()
+{
+  return simInSize > 0;
+}
 /*---------------------------------------------------------------------------*/
 static void
 set_send_on_cca(uint8_t enable)
