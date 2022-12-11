@@ -250,9 +250,26 @@ evmap_signal_del_(struct event_base *base, int sig, struct event *ev)
 	return (1);
 }
 
-/** Expand 'map' with new entries of width 'msize' until it is big enough
-	to store a value in 'slot'.
- */
+void
+evmap_io_active_(struct event_base *base, evutil_socket_t fd, short events)
+{
+	struct event_io_map *io = &base->io;
+	struct evmap_io *ctx;
+	struct event *ev;
+
+	if (fd < 0 || fd >= io->nentries)
+		return;
+		
+	GET_IO_SLOT(ctx, io, fd, evmap_io);
+
+	if (NULL == ctx)
+		return;
+	LIST_FOREACH(ev, &ctx->events, ev_io_next) {
+		if (ev->ev_events & (events & ~EV_ET))
+			event_active_nolock_(ev, ev->ev_events & events, 1);
+	}
+}
+
 static int
 evmap_make_space(struct event_signal_map *map, int slot, int msize)
 {

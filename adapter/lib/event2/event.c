@@ -10,8 +10,6 @@
 #include "evthread-internal.h"
 #include "changelist-internal.h"
 
-#include "cooja_config.h"
-
 #include <event2/util.h>
 #include <string.h>
 #include <limits.h>

@@ -6,7 +6,7 @@ endif
 CONTIKI_TARGET_DIRS = . dev cfs
 CONTIKI_TARGET_MAIN = ${addprefix $(OBJECTDIR)/,contiki-main.o}
 CONTIKI_TARGET_SOURCEFILES += platform.c xmem.c buttons.c gpio-hal-arch.c eeprom.c \
-  rtimer-arch.c watchdog.c event2.c
+  rtimer-arch.c watchdog.c event2.c foo-radio.c
 
 # The different options
 MAKE_CFS_POSIX = 1

@@ -6,8 +6,8 @@
 #include "coojaa.h"
 #include "coojaa/dev/radio.h"
 
-#define FOO_RADIO_BUFSIZE    128
 static int have_packet = 0;
+static int send_available = 0;
 static char foo_radio_buffer[FOO_RADIO_BUFSIZE];
 
 static int init(void);
@@ -54,6 +54,11 @@ int foo_radio_new_packet(const void *payload, unsigned short payload_len)
     memcpy(foo_radio_buffer, payload, payload_len);
     have_packet = 1;
     return 0;
+}
+
+void foo_radio_send_available()
+{
+    send_available = 1;
 }
 
 static int init(void)

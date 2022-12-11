@@ -4,7 +4,7 @@
 
 int connect(int fd, const struct sockaddr *addr, socklen_t addrlen)
 {
-    if (fd == RADIO_SOCKET)
+    if (fd == RADIO_FD)
         return 0;
     
     errno = EACCES;
@@ -13,14 +13,14 @@ int connect(int fd, const struct sockaddr *addr, socklen_t addrlen)
 
 int socket(int domain, int type, int protocol)
 {
-    return RADIO_SOCKET;
+    return RADIO_FD;
 }
 
 ssize_t send(int sockfd, const void *buf, size_t len, int flags)
 {
     int res;
 
-    if (sockfd != RADIO_SOCKET) {
+    if (sockfd != RADIO_FD) {
         errno = EACCES;
         goto err;
     }
@@ -41,7 +41,7 @@ ssize_t recv(int sockfd, void *buf, size_t len, int flags)
 {
     int res;
 
-    if (sockfd != RADIO_SOCKET) {
+    if (sockfd != RADIO_FD) {
         errno = EACCES;
         goto err;
     }

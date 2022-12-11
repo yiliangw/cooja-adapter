@@ -7,18 +7,16 @@
 #include "sys/rtimer.h"
 #include "util-internal.h"
 #include "log-internal.h"
+#include "coojaa-internal.h"
 
 #include "platform/event2.h"
 #include <asm-generic/errno-base.h>
 #include <errno.h>
-#include <sys/types.h>
 
 static void *coojaa_init(struct event_base *);
 static int coojaa_add(struct event_base *, int, short old, short events, void*);
 static int coojaa_del(struct event_base *, int, short old, short events, void*);
 static int coojaa_dispatch(struct event_base *, struct timeval *);
-
-static inline int fd_to_index(int fd);
 
 const struct eventop coojaaops = {
 	"select",
@@ -27,11 +25,6 @@ const struct eventop coojaaops = {
 	coojaa_del,
 	coojaa_dispatch,
 	0,  // TODO:
-};
-
-struct coojaaop {
-	bool socket_in[COOJAA_SOCKET_NUM];	/* Whether the sockets have been registerd for read */
-	bool socket_out[COOJAA_SOCKET_NUM];	/* Whether the sockets have been registerd for write */
 };
 
 static void *coojaa_init(struct event_base *base)
@@ -48,7 +41,7 @@ static int
 coojaa_add(struct event_base *base, int fd, short old, short events, void *p)
 {
 	struct coojaaop *cop = base->evbase;
-	int idx = fd_to_index(fd);
+	int idx = fd_to_index_(fd);
 
 	(void) p;
 
@@ -70,7 +63,7 @@ coojaa_add(struct event_base *base, int fd, short old, short events, void *p)
 static int coojaa_del(struct event_base *base , int fd, short old, short events, void*p)
 {
 	struct coojaaop *cop = base->evbase;
-	int idx = fd_to_index(fd);
+	int idx = fd_to_index_(fd);
 
 	(void) p;
 
@@ -91,12 +84,4 @@ static int coojaa_del(struct event_base *base , int fd, short old, short events,
 static int coojaa_dispatch(struct event_base *base, struct timeval *tv)
 {
 	return platform_coojaa_dispatch(base, tv);		
-}
-
-static inline int fd_to_index(int fd)
-{
-	if (!valid_coojaa_socket(fd))
-		return -1;
-	
-	return fd - COOJAA_SOCKET_MIN - 1;
 }

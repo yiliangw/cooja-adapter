@@ -218,7 +218,7 @@ vpath %.cpp $(SOURCEDIRS)
 vpath %.S $(SOURCEDIRS)
 vpath %.s $(SOURCEDIRS)
 
-CFLAGS += -I$(COOJAA)/include
+CFLAGS += -I$(COOJAA)/include -I$(COOJAA)/adapter/internal-include
 
 ### Check for a git repo and pass version if found
 ### git.exe in Windows cmd shells may require no stderr redirection
