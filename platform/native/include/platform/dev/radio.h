@@ -4,8 +4,8 @@
 #define FOO_RADIO_BUFSIZE    128
 
 struct radio_driver;
-extern const struct radio_driver *foo_radio_driver;
-extern const struct radio_driver *platform_radio_driver;
+extern const struct radio_driver foo_radio_driver;
+#define PLATFORM_RADIO()    foo_radio_driver
 
 int foo_radio_new_packet(const void *payload, unsigned short payload_len);
 void foo_radio_send_available();

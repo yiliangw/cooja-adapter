@@ -58,8 +58,9 @@
 #define RADIO_H_
 
 #include <stddef.h>
+#include "platform/dev/radio.h"
 
-extern const struct radio_driver *radio_driver;
+#define RADIO() PLATFORM_RADIO()
 
 /**
  * Each radio has a set of parameters that designate the current

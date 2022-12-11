@@ -39,7 +39,7 @@ static void *coojaa_init(struct event_base *base)
 
 static int
 coojaa_add(struct event_base *base, int fd, short old, short events, void *p)
-{
+{	
 	struct coojaaop *cop = base->evbase;
 	int idx = fd_to_index_(fd);
 

@@ -25,7 +25,7 @@ static radio_result_t set_value(radio_param_t param, radio_value_t value);
 static radio_result_t get_object(radio_param_t param, void *dest, size_t size);
 static radio_result_t set_object(radio_param_t param, const void *src, size_t size);
 
-const struct radio_driver foo_radio_driver_ =
+const struct radio_driver foo_radio_driver =
 {
     init,
     prepare_packet,
@@ -42,8 +42,6 @@ const struct radio_driver foo_radio_driver_ =
     get_object,
     set_object
 };
-const struct radio_driver *foo_radio_driver = &foo_radio_driver_;
-const struct radio_driver *platform_radio_driver = &foo_radio_driver_;
 
 /* To act as if a new packet is received. */
 int foo_radio_new_packet(const void *payload, unsigned short payload_len)
@@ -84,7 +82,15 @@ static int radio_send(const void *payload, unsigned short payload_len)
 
 static int radio_read(void *buf, size_t buf_len)
 {
-    return 0;
+    int len = strnlen(foo_radio_buffer, FOO_RADIO_BUFSIZE);
+    if (buf_len < len) {
+        printf("Buffer too small\n");
+        return 0;
+    }
+
+    memcpy(buf, foo_radio_buffer, len);
+
+    return len;
 }
 
 static int channel_clear(void)

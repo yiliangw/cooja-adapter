@@ -2,8 +2,8 @@
 #define COOJAA_PLATFORM_RADIO_H_
 
 struct radio_driver;
-extern const struct radio_driver *cooja_radio_driver;
-extern const struct radio_driver *platform_radio_driver;
+extern const struct radio_driver cooja_radio_driver;
+#define PLATFORM_RADIO() cooja_radio_driver
 
 #ifdef COOJA_CONF_SIMULATE_TURNAROUND
 #define COOJA_SIMULATE_TURNAROUND COOJA_CONF_SIMULATE_TURNAROUND

@@ -1,6 +1,9 @@
 #include "coojaa/sys/socket.h"
+#include "internal/fd.h"
 #include "coojaa/dev/radio.h"
+#include <stdio.h>
 #include <errno.h>
+
 
 int connect(int fd, const struct sockaddr *addr, socklen_t addrlen)
 {
@@ -21,12 +24,14 @@ ssize_t send(int sockfd, const void *buf, size_t len, int flags)
     int res;
 
     if (sockfd != RADIO_FD) {
+        printf("sockfd=%d\n", sockfd);
         errno = EACCES;
         goto err;
     }
 
-    res = radio_driver->send(buf, len);
+    res = RADIO().send(buf, len);
     if (res != RADIO_TX_OK) {
+        printf("res=%d\n", res);
         errno = EIO;
         goto err;
     }
@@ -42,12 +47,14 @@ ssize_t recv(int sockfd, void *buf, size_t len, int flags)
     int res;
 
     if (sockfd != RADIO_FD) {
+        printf("sockfd=%d\n", sockfd);
         errno = EACCES;
         goto err;
     }
 
-    res = radio_driver->read(buf, len);
+    res = RADIO().read(buf, len);
     if (res == 0 && len != 0) {
+        printf("res=%d\n", res);
         errno = EIO;
         goto err;
     }
