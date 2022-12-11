@@ -8,16 +8,38 @@ extern "C" {
 #include "coojaa/event2/event.h"
 #include "coojaa/event2/event_struct.h"
 #include "coojaa/sys/socket.h"
+#include "lib/assert.h"
+}
+
+struct send_info {
+    void *buf;
+    int len;
+};
+
+static inline struct send_info *new_send_info(int len)
+{
+    struct send_info *info = (struct send_info*)calloc(1, sizeof(struct send_info));
+    assert(info != NULL);
+    info->len = len;
+    info->buf = calloc(1, len);
+    return info;
+}
+
+static inline void free_send_info(struct send_info *info)
+{
+    free(info->buf);
+    free(info);
 }
 
 static void timeout_cb(evutil_socket_t fd, short event, void *arg);
 static void receive_cb(evutil_socket_t fd, short event, void *arg);
-// static void send_cb(evutil_socket_t fd, short event, void *arg);
+static void send_packet(evutil_socket_t fd, short event, void *arg);
 
 static int radiofd;
 static struct event_base *base;
 
-#define BUFFER_LEN  64
+#define RECV_BUF_SIZE  64
+static char recvbuf[RECV_BUF_SIZE];
 
 /* Define the entry as extern "C"` since its called from C code */
 extern "C"
@@ -36,14 +58,13 @@ int main()
     /* Initialize the event library */
     base = event_base_new();
 
-    /* Timeout event */
-    // ev_timeout = event_new(base, -1, EV_PERSIST, timeout_cb, event_self_cbarg());
-    ev_timeout = event_new(base, -1, 0, timeout_cb, event_self_cbarg());
+    /* Timeout event: send packets every 3 seconds. */
+    ev_timeout = event_new(base, -1, EV_PERSIST, timeout_cb, event_self_cbarg());
     evutil_timerclear(&tv);
-    tv.tv_sec = 1;
+    tv.tv_sec = 3;
     event_add(ev_timeout, &tv);
     
-    /* Receive event */
+    /* Receive event: print the contents of received packets */
     ev_receive = event_new(base, radiofd, EV_PERSIST|EV_READ, receive_cb, event_self_cbarg());
     event_add(ev_receive, NULL);
 
@@ -57,38 +78,41 @@ int main()
 static void timeout_cb(evutil_socket_t fd, short event, void *arg)
 {
     static int cnt = 0;
+    static const int buflen = 128;
 
     struct timeval tv;
-    /* Print current time */
+    struct event *ev_send;
+    struct send_info *info;
+
+    /* Send a packet containing the counter and current time.*/
+    info = new_send_info(buflen);
     evutil_gettimeofday(&tv, NULL);
-    printf("%s: Send message %d at: %ld s\n", __func__, cnt, tv.tv_sec);
+    sprintf((char*)(info->buf), "Periodic packet %d at %ld s\n", cnt, tv.tv_sec);
+    
+    /* Send the packet once the radio becomes available. */
+    ev_send = event_new(base, radiofd, EV_WRITE, send_packet, info);
+    event_add(ev_send, NULL);
 
     cnt++;
 }
 
 static void receive_cb(evutil_socket_t fd, short event, void *arg)
 {
-    char buf[BUFFER_LEN];
-    memset(buf, 0, BUFFER_LEN);
-    ssize_t res = recv(radiofd, buf, BUFFER_LEN, 0);
+    memset(recvbuf, 0, RECV_BUF_SIZE);
+    ssize_t res = recv(radiofd, recvbuf, RECV_BUF_SIZE, 0);
 
     if (res == -1)
         printf("%s: Fail to receive\n", __func__);
     else
-        printf("%s: Recieve: %s", __func__, buf);
+        printf("%s: Recieve: %s", __func__, recvbuf);
 
 }
 
-// static void send_cb(evutil_socket_t fd, short event, void *arg)
-// {
-//     void *buf = arg;
-//     ssize_t res = send(radio_sock, buf, BUFFER_LEN, 0);
+static void send_packet(evutil_socket_t fd, short event, void *arg)
+{
+    struct send_info *info = (struct send_info *)arg;
+    send(radiofd, info->buf, info->len, 0);
 
-//     if (res == -1)
-//         printf("%s: Fail to send: %s\n", __func__, (char*)buf);
-//     else
-//         printf("%s: Sent: %s\n", __func__, (char*)buf);
-
-//     /* Free the buffer */
-//     free(buf);
-// }
+    /* Free the buffer */
+    free_send_info(info);
+}

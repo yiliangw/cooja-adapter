@@ -110,15 +110,15 @@
 /******************************************************************************/
 
 #ifndef LOG_CONF_LEVEL_MAIN
-#define LOG_CONF_LEVEL_MAIN                        LOG_LEVEL_INFO
+#define LOG_CONF_LEVEL_MAIN                     LOG_LEVEL_INFO
 #endif /* LOG_CONF_LEVEL_MAIN */
 
 #ifndef LOG_CONF_LEVEL_LIBEVENT
-#define LOG_CONF_LEVEL_LIBEVENT                    LOG_LEVEL_DBG
+#define LOG_CONF_LEVEL_LIBEVENT                 LOG_LEVEL_WARN
 #endif /* LOG_CONF_LEVEL_LIBEVENT */
 
 #ifndef LOG_CONF_LEVEL_RADIO
-#define LOG_CONF_LEVEL_RADIO                    LOG_LEVEL_DBG
+#define LOG_CONF_LEVEL_RADIO                    LOG_LEVEL_WARN
 #endif /* LOG_CONF_LEVEL_RADIO */
 
 #endif /* __LOG_CONF_H__ */

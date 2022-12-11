@@ -135,6 +135,7 @@ extern struct log_module all_modules[];
                                 } \
                               } \
                               LOG_OUTPUT(__VA_ARGS__); \
+                              LOG_OUTPUT("\n"); \
                             } \
                           } while (0)
 

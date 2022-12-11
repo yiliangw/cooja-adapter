@@ -55,7 +55,7 @@ coojaa_add(struct event_base *base, int fd, short old, short events, void *p)
 		cop->socket_in[idx] = true;
 
 	if (events & EV_WRITE)
-		cop->socket_in[idx] = true;
+		cop->socket_out[idx] = true;
 
 	return 0;
 }
@@ -76,7 +76,7 @@ static int coojaa_del(struct event_base *base , int fd, short old, short events,
 		cop->socket_in[idx] = false;
 		
 	if (events & EV_WRITE)
-		cop->socket_in[idx] = false;
+		cop->socket_out[idx] = false;
 
 	return 0;
 }
