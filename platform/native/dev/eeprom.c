@@ -42,7 +42,7 @@
 #include "sys/cc.h"
 
 /* Log configuration */
-#include "sys/log.h"
+#include "internal/log.h"
 #define LOG_MODULE "EEPROM"
 #define LOG_LEVEL LOG_LEVEL_MAIN
 

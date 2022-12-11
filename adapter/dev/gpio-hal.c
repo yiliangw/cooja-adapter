@@ -40,7 +40,7 @@
 #include "coojaa.h"
 #include "coojaa/dev/gpio-hal.h"
 #include "lib/list.h"
-#include "sys/log.h"
+#include "internal/log.h"
 
 #include <stdint.h>
 #include <string.h>

@@ -36,7 +36,7 @@
 #include <stdint.h>
 /*---------------------------------------------------------------------------*/
 /* Log configuration */
-#include "sys/log.h"
+#include "internal/log.h"
 #define LOG_MODULE "GPIO arch"
 #define LOG_LEVEL LOG_LEVEL_NONE
 /*---------------------------------------------------------------------------*/

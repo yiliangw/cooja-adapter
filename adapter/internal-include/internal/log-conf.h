@@ -109,53 +109,13 @@
 /********************* A list of currently supported modules ******************/
 /******************************************************************************/
 
-#ifndef LOG_CONF_LEVEL_RPL
-#define LOG_CONF_LEVEL_RPL                         LOG_LEVEL_NONE /* Only for rpl-lite */
-#endif /* LOG_CONF_LEVEL_RPL */
-
-#ifndef LOG_CONF_LEVEL_TCPIP
-#define LOG_CONF_LEVEL_TCPIP                       LOG_LEVEL_NONE
-#endif /* LOG_CONF_LEVEL_TCPIP */
-
-#ifndef LOG_CONF_LEVEL_IPV6
-#define LOG_CONF_LEVEL_IPV6                        LOG_LEVEL_NONE
-#endif /* LOG_CONF_LEVEL_IPV6 */
-
-#ifndef LOG_CONF_LEVEL_6LOWPAN
-#define LOG_CONF_LEVEL_6LOWPAN                     LOG_LEVEL_NONE
-#endif /* LOG_CONF_LEVEL_6LOWPAN */
-
-#ifndef LOG_CONF_LEVEL_NULLNET
-#define LOG_CONF_LEVEL_NULLNET                     LOG_LEVEL_NONE
-#endif /* LOG_CONF_LEVEL_NULLNET */
-
-#ifndef LOG_CONF_LEVEL_MAC
-#define LOG_CONF_LEVEL_MAC                         LOG_LEVEL_NONE
-#endif /* LOG_CONF_LEVEL_MAC */
-
-#ifndef LOG_CONF_LEVEL_FRAMER
-#define LOG_CONF_LEVEL_FRAMER                      LOG_LEVEL_NONE
-#endif /* LOG_CONF_LEVEL_FRAMER */
-
-#ifndef LOG_CONF_LEVEL_6TOP
-#define LOG_CONF_LEVEL_6TOP                        LOG_LEVEL_NONE
-#endif /* LOG_CONF_LEVEL_6TOP */
-
-#ifndef LOG_CONF_LEVEL_COAP
-#define LOG_CONF_LEVEL_COAP                        LOG_LEVEL_NONE
-#endif /* LOG_CONF_LEVEL_COAP */
-
-#ifndef LOG_CONF_LEVEL_SNMP
-#define LOG_CONF_LEVEL_SNMP                        LOG_LEVEL_NONE
-#endif /* LOG_CONF_LEVEL_COAP */
-
-#ifndef LOG_CONF_LEVEL_LWM2M
-#define LOG_CONF_LEVEL_LWM2M                       LOG_LEVEL_NONE
-#endif /* LOG_CONF_LEVEL_LWM2M */
-
 #ifndef LOG_CONF_LEVEL_MAIN
 #define LOG_CONF_LEVEL_MAIN                        LOG_LEVEL_INFO
 #endif /* LOG_CONF_LEVEL_MAIN */
+
+#ifndef LOG_CONF_LEVEL_LIBEVENT
+#define LOG_CONF_LEVEL_LIBEVENT                    LOG_LEVEL_DBG
+#endif /* LOG_CONF_LEVEL_LIBEVENT */
 
 #endif /* __LOG_CONF_H__ */
 

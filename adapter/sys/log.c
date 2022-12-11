@@ -51,34 +51,14 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "sys/log.h"
+#include "internal/log.h"
 
-int curr_log_level_rpl = LOG_CONF_LEVEL_RPL;
-int curr_log_level_tcpip = LOG_CONF_LEVEL_TCPIP;
-int curr_log_level_ipv6 = LOG_CONF_LEVEL_IPV6;
-int curr_log_level_6lowpan = LOG_CONF_LEVEL_6LOWPAN;
-int curr_log_level_nullnet = LOG_CONF_LEVEL_NULLNET;
-int curr_log_level_mac = LOG_CONF_LEVEL_MAC;
-int curr_log_level_framer = LOG_CONF_LEVEL_FRAMER;
-int curr_log_level_6top = LOG_CONF_LEVEL_6TOP;
-int curr_log_level_coap = LOG_CONF_LEVEL_COAP;
-int curr_log_level_snmp = LOG_CONF_LEVEL_SNMP;
-int curr_log_level_lwm2m = LOG_CONF_LEVEL_LWM2M;
 int curr_log_level_main = LOG_CONF_LEVEL_MAIN;
+int curr_log_level_libevent = LOG_CONF_LEVEL_LIBEVENT;
 
 struct log_module all_modules[] = {
-  {"rpl", &curr_log_level_rpl, LOG_CONF_LEVEL_RPL},
-  {"tcpip", &curr_log_level_tcpip, LOG_CONF_LEVEL_TCPIP},
-  {"ipv6", &curr_log_level_ipv6, LOG_CONF_LEVEL_IPV6},
-  {"6lowpan", &curr_log_level_6lowpan, LOG_CONF_LEVEL_6LOWPAN},
-  {"nullnet", &curr_log_level_nullnet, LOG_CONF_LEVEL_NULLNET},
-  {"mac", &curr_log_level_mac, LOG_CONF_LEVEL_MAC},
-  {"framer", &curr_log_level_framer, LOG_CONF_LEVEL_FRAMER},
-  {"6top", &curr_log_level_6top, LOG_CONF_LEVEL_6TOP},
-  {"coap", &curr_log_level_coap, LOG_CONF_LEVEL_COAP},
-  {"snmp", &curr_log_level_snmp, LOG_CONF_LEVEL_SNMP},
-  {"lwm2m", &curr_log_level_lwm2m, LOG_CONF_LEVEL_LWM2M},
   {"main", &curr_log_level_main, LOG_CONF_LEVEL_MAIN},
+  {"libevent", &curr_log_level_libevent, LOG_CONF_LEVEL_LIBEVENT},
   {NULL, NULL, 0},
 };
 

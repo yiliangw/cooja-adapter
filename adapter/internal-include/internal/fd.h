@@ -1,5 +1,5 @@
-#ifndef INTERNAL_FD_H_
-#define INTERNAL_FD_H_
+#ifndef _FD_H_
+#define _FD_H_
 
 enum coojaa_fd {
   COOJAA_FD_FLOOR = 100,
@@ -14,4 +14,4 @@ static inline int valid_coojaa_fd(int fd)
   return (fd > COOJAA_FD_FLOOR) && (fd < COOJAA_FD_CEIL); 
 }
 
-#endif /* INTERNAL_FD_H_ */
+#endif /* _FD_H_*/

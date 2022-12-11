@@ -1,31 +1,29 @@
 #ifndef LOG_INTERNAL_H_INCLUDED_
 #define LOG_INTERNAL_H_INCLUDED_
 
-#include <stdio.h>
+/*---------------------------------------------------------------------------*/
+/* Log configuration for libevent */
+#include "internal/log.h"
+#define LOG_MODULE "libevent"
+#define LOG_LEVEL LOG_LEVEL_LIBEVENT
+/*---------------------------------------------------------------------------*/
 
-#define __error(...) do { \
-	printf("[Libevent Error](%s:%i):", __FILE__, __LINE__);	\
-	printf(__VA_ARGS__); \
-	printf("\n"); \
-} while(0)
+#define event_errx(eval, ...) do {	\
+	LOG_ERR(__VA_ARGS__); 			\
+	LOG_ERR("\n");					\
+} while (0)
+#define event_err(eval, ...)	event_errx(eval, __VA_ARGS__)
 
-#define __warn(...) do { \
-	printf("[Libevent Warning](%s:%i):", __FILE__, __LINE__);	\
-	printf(__VA_ARGS__); \
-	printf("\n"); \
-} while(0)
+#define event_warnx(...) do {	\
+	LOG_WARN(__VA_ARGS__); 		\
+	LOG_WARN("\n");				\
+} while (0)
+#define event_warn(...)			event_warnx(__VA_ARGS__)
 
-#define __debug(...) do { \
-	printf("[Libevent Debug](%s:%i):", __FILE__, __LINE__);	\
-	printf(__VA_ARGS__); \
-	printf("\n"); \
-} while(0)
-
-#define event_err(eval, ...)		__error(__VA_ARGS__)
-#define event_errx(eval, ...)		event_err(eval, __VA_ARGS__)
-#define event_warn(...)				__warn(__VA_ARGS__)
-#define event_warnx(...)			event_warn(__VA_ARGS__)
-#define event_debugx_(...) 			__debug(__VA_ARGS__)
+#define event_debugx_(...) do {	\
+	LOG_DBG(__VA_ARGS__); 		\
+	LOG_DBG("\n");				\
+} while (0)
 #define event_debug(x) do {	\
 	event_debugx_ x;		\
 } while (0)
