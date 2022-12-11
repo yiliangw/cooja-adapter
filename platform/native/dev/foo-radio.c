@@ -82,6 +82,9 @@ static int radio_send(const void *payload, unsigned short payload_len)
 
 static int radio_read(void *buf, size_t buf_len)
 {
+    if (!have_packet)
+        return 0;
+
     int len = strnlen(foo_radio_buffer, FOO_RADIO_BUFSIZE);
     if (buf_len < len) {
         printf("Buffer too small\n");
@@ -89,6 +92,7 @@ static int radio_read(void *buf, size_t buf_len)
     }
 
     memcpy(buf, foo_radio_buffer, len);
+    have_packet = 0;
 
     return len;
 }
