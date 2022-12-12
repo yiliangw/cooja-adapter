@@ -3,6 +3,4 @@
 
 #include "platform-conf.h"
 
-#include "sys/rtimer.h"
-
 #endif /* COOJAA_H_ */

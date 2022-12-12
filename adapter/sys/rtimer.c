@@ -43,7 +43,7 @@
  * @{
  */
 
-#include "sys/rtimer.h"
+#include "internal/rtimer.h"
 #include "coojaa.h"
 #include "rtimer-arch.h"
 #include "sys/cc.h"

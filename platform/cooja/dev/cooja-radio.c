@@ -38,6 +38,7 @@
 
 #include "platform/cooja_mt.h"
 #include "platform/simEnvChange.h"
+#include "internal/rtimer.h"
 
 #include "sys/energest.h"
 

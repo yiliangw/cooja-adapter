@@ -41,15 +41,7 @@
 
 #include <stddef.h>
 
-#include "sys/rtimer.h"
-
-#define DEBUG 0
-#if DEBUG
-#include <stdio.h>
-#define PRINTF(...) printf(__VA_ARGS__)
-#else
-#define PRINTF(...)
-#endif
+#include "internal/rtimer.h"
 
 void rtimer_arch_init(void)
 {

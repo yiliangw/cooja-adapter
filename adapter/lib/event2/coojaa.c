@@ -4,7 +4,7 @@
 #include "coojaa/event2/event.h"
 #include "coojaa/sys/socket.h"
 #include "event-internal.h"
-#include "sys/rtimer.h"
+#include "internal/rtimer.h"
 #include "util-internal.h"
 #include "log-internal.h"
 #include "coojaa-internal.h"

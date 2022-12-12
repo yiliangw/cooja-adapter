@@ -62,6 +62,7 @@
 #include "coojaa/dev/moteid.h"
 #include "coojaa/dev/gpio-hal.h"
 
+#include "internal/event-framwork.h"
 #include "sys/node-id.h"
 #if BUILD_WITH_ORCHESTRA
 #include "orchestra.h"
@@ -115,9 +116,6 @@ int *__geterrno()
   return &__errno;
 }
 
-/*
- * Contiki and rtimer threads.
- */
 static struct cooja_mt_thread process_run_thread;
 /*---------------------------------------------------------------------------*/
 /* Needed since the new LEDs API does not provide this prototype */
@@ -296,8 +294,9 @@ Java_org_contikios_cooja_corecomm_CLASSNAME_tick(JNIEnv *env, jobject obj)
     cooja_mt_exec(&process_run_thread);
   }
 
-  simEtimerPending = 1;
-  simEtimerNextExpirationTime = 0;
+  simEtimerPending = EVENT_FRAMWORK().timeout_pending();
+  if (simEtimerPending)
+    simEtimerNextExpirationTime = EVENT_FRAMWORK().timeout_next();
 
   if (!main_exited)
     LOG_DBG("Tick end simProcessRunValue = %d", simProcessRunValue);

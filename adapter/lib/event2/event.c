@@ -2,6 +2,7 @@
 #include "coojaa/event2/util.h"
 #include "coojaa/event2/event_struct.h"
 #include "event-internal.h"
+#include "internal/clock.h"
 #include "minheap-internal.h"
 #include "util-internal.h"
 #include "evmap-internal.h"
@@ -18,10 +19,23 @@
 #include <sys/queue.h>
 
 #include "lib/assert.h"
+#include "internal/clock.h"
 
+
+
+/*------------------------------------------------*/
+/* The interface for CoojaA */
+#include "internal/event-framwork.h"
+static int timeout_pending_(void);
+static clock_time_t timeout_next_(void);
+
+struct event_framework libevent_evf = {
+	timeout_pending_,
+	timeout_next_,
+};
+/*------------------------------------------------*/
 
 struct event_change;
-
 
 static struct event_base *current_base = NULL;
 
@@ -70,6 +84,7 @@ static void event_debug_assert_is_setup_(const struct event *ev) {}
 
 static void insert_common_timeout_inorder(struct common_timeout_list *ctl,
     struct event *ev);
+
 
 
 struct event_base *
@@ -1344,3 +1359,21 @@ common_timeout_schedule(struct common_timeout_list *ctl,
 	event_add_nolock_(&ctl->timeout_event, &timeout, 1);
 }
 
+
+static int
+timeout_pending_()
+{
+	return current_base != NULL && !min_heap_empty_(&current_base->timeheap);
+}
+
+static clock_time_t
+timeout_next_()
+{
+	struct event *ev;
+	if (!timeout_pending_())
+		return 0;
+	
+	ev = min_heap_top_(&current_base->timeheap);
+	assert(ev != NULL);
+	return timeval_to_clocktime(&ev->ev_timeout);
+}

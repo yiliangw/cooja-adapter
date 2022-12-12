@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Swedish Institute of Computer Science.
+ * Copyright (c) 2005, Swedish Institute of Computer Science.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,52 +30,73 @@
  *
  */
 
-#include <signal.h>
+/**
+ * \file
+ *         Clock implementation for Unix.
+ * \author
+ *         Adam Dunkels <adam@sics.se>
+ */
+
+#include "internal/clock.h"
+#include <time.h>
 #include <sys/time.h>
-#include <stddef.h>
-
-#include "internal/rtimer.h"
-#include "platform/cooja_mt.h"
-
-#include "platform/simEnvChange.h"
-
-/* COOJA */
-int simRtimerPending;
-rtimer_clock_t simRtimerNextExpirationTime;
-rtimer_clock_t simRtimerCurrentTicks;
 
 /*---------------------------------------------------------------------------*/
-void
-rtimer_arch_init(void)
+typedef struct clock_timespec_s {
+  time_t  tv_sec;
+  long  tv_nsec;
+} clock_timespec_t;
+/*---------------------------------------------------------------------------*/
+static void
+get_time(clock_timespec_t *spec)
 {
-  simRtimerNextExpirationTime = 0;
-  simRtimerPending = 0;
+#if defined(__linux__) || (defined(__MACH__) && __MAC_OS_X_VERSION_MIN_REQUIRED >= 101200)
+  struct timespec ts;
+
+  clock_gettime(CLOCK_MONOTONIC, &ts);
+
+  spec->tv_sec = ts.tv_sec;
+  spec->tv_nsec = ts.tv_nsec;
+#else
+  struct timeval tv;
+
+  gettimeofday(&tv, NULL);
+
+  spec->tv_sec = tv.tv_sec;
+  spec->tv_nsec = tv.tv_usec * 1000;
+#endif
+}
+/*---------------------------------------------------------------------------*/
+clock_time_t
+clock_time(void)
+{
+  clock_timespec_t ts;
+
+  get_time(&ts);
+
+  return ts.tv_sec * CLOCK_SECOND + ts.tv_nsec / (1000000000 / CLOCK_SECOND);
+}
+/*---------------------------------------------------------------------------*/
+unsigned long
+clock_seconds(void)
+{
+  clock_timespec_t ts;
+
+  get_time(&ts);
+
+  return ts.tv_sec;
 }
 /*---------------------------------------------------------------------------*/
 void
-rtimer_arch_schedule(rtimer_clock_t t)
+clock_delay(unsigned int d)
 {
-  simRtimerNextExpirationTime = t;
-  simRtimerPending = 1;
+  /* Does not do anything. */
 }
 /*---------------------------------------------------------------------------*/
-rtimer_clock_t
-rtimer_arch_next(void)
+void
+clock_init(void)
 {
-  return simRtimerNextExpirationTime;
+  /* Provide this function, required by main() */
+  return;
 }
 /*---------------------------------------------------------------------------*/
-int
-rtimer_arch_pending(void)
-{
-  return simRtimerPending;
-}
-/*---------------------------------------------------------------------------*/
-
-rtimer_clock_t
-rtimer_arch_now(void)
-{
-  return simRtimerCurrentTicks;
-}
-/*---------------------------------------------------------------------------*/
-
