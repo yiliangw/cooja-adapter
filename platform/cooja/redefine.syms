@@ -5,3 +5,7 @@ snprintf  log_snprintf
 vsnprintf log_vsnprintf
 puts      log_puts
 putchar   log_putchar
+connect   coojaa_connect
+socket    coojaa_socket
+send      coojaa_send
+recv      coojaa_receive
