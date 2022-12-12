@@ -119,6 +119,8 @@ radio_send_prepared()
 int
 radio_read_prepared()
 {
+  if (simInSize > 0)
+    LOG_DBG("(%s) simInSize = %d", __func__, simInSize);
   return simInSize > 0;
 }
 /*---------------------------------------------------------------------------*/
@@ -204,6 +206,7 @@ static void
 doInterfaceActionsBeforeTick(void)
 {
   if(!simRadioHWOn) {
+    LOG_DBG("Radio off");
     simInSize = 0;
     return;
   }
@@ -275,12 +278,14 @@ radio_send(const void *payload, unsigned short payload_len)
     ENERGEST_ON(ENERGEST_TYPE_TRANSMIT);
   }
 
-  // simProcessRunValue = 1;
-  // cooja_mt_yield();
-  // if(payload_len > 3) {
-  //   simProcessRunValue = 1;
-  //   cooja_mt_yield();
-  // }
+#if COOJA_SIMULATE_TURNAROUND
+  simProcessRunValue = 1;
+  cooja_mt_yield();
+  if(payload_len > 3) {
+    simProcessRunValue = 1;
+    cooja_mt_yield();
+  }
+#endif /* COOJA_SIMULATE_TURNAROUND */
 
   /* Transmit on CCA */
   if(COOJA_TRANSMIT_ON_CCA && send_on_cca && !channel_clear()) {
@@ -290,7 +295,7 @@ radio_send(const void *payload, unsigned short payload_len)
     memcpy(simOutDataBuffer, payload, payload_len);
     simOutSize = payload_len;
 
-    LOG_INFO("About to send. simOutsize = %d", simOutSize);
+    LOG_INFO("Packet to send. simOutsize = %d", simOutSize);
     /* Transmit */
     while(simOutSize > 0) {
       cooja_mt_yield();

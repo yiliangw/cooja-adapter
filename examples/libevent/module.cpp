@@ -64,14 +64,12 @@ int main()
     /* Timeout event: send packets every 3 seconds. */
     ev_timeout = event_new(base, -1, EV_PERSIST, timeout_cb, event_self_cbarg());
     evutil_timerclear(&tv);
-    tv.tv_sec = 3;
+    tv.tv_sec = 5;
     event_add(ev_timeout, &tv);
     
-    (void) ev_receive;
-    (void) receive_cb;
     /* Receive event: print the contents of received packets */
-    // ev_receive = event_new(base, radiofd, EV_PERSIST|EV_READ, receive_cb, event_self_cbarg());
-    // event_add(ev_receive, NULL);
+    ev_receive = event_new(base, radiofd, EV_PERSIST|EV_READ, receive_cb, event_self_cbarg());
+    event_add(ev_receive, NULL);
 
     event_base_dispatch(base);
 
@@ -91,11 +89,11 @@ static void timeout_cb(evutil_socket_t fd, short event, void *arg)
     /* Send a packet containing the counter and current time.*/
     info = new_send_info(64);
     evutil_gettimeofday(&tv, NULL);
-    printf("%s %d at %ld s\n", __func__, cnt, tv.tv_sec);
     
     if (simMoteID == 1) {
         /* Send the packet once the radio becomes available. */
-        sprintf((char*)(info->buf), "Periodic packet %d at %ld s\n", cnt, tv.tv_sec);
+        sprintf((char*)(info->buf), "Periodic packet %d", cnt);
+        printf("Packet registered: %s\n", (const char *)(info->buf));
         ev_send = event_new(base, radiofd, EV_WRITE, send_packet, info);
         event_add(ev_send, NULL);
     }
@@ -111,7 +109,7 @@ static void receive_cb(evutil_socket_t fd, short event, void *arg)
     if (res == -1)
         printf("%s: Fail to receive\n", __func__);
     else
-        printf("%s: Recieve: %s", __func__, recvbuf);
+        printf("%s: Recieve: %s\n", __func__, recvbuf);
 
 }
 
@@ -119,6 +117,8 @@ static void send_packet(evutil_socket_t fd, short event, void *arg)
 {
     struct send_info *info = (struct send_info *)arg;
     send(radiofd, info->buf, info->len, 0);
+
+    printf("Packet sent: %s\n", (const char *)(info->buf));
 
     /* Free the buffer */
     free_send_info(info);
