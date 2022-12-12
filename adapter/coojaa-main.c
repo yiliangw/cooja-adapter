@@ -31,8 +31,6 @@ coojaa_main(void)
 
   watchdog_start();
 
-  node_entry();
-
-  return 0;
+  return node_entry();
 }
 

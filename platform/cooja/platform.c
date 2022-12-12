@@ -48,8 +48,9 @@
 /*---------------------------------------------------------------------------*/
 /* Log configuration */
 #include "internal/log.h"
-#define LOG_MODULE "Cooja"
+#define LOG_MODULE "JNI"
 #define LOG_LEVEL LOG_LEVEL_MAIN
+/*---------------------------------------------------------------------------*/
 
 #include "lib/random.h"
 #include "platform/simEnvChange.h"
@@ -81,9 +82,6 @@
 #define Java_org_contikios_cooja_corecomm_CLASSNAME_setMemory COOJA__QUOTEME(COOJA_JNI_PATH,CLASSNAME,_setMemory)
 #define Java_org_contikios_cooja_corecomm_CLASSNAME_tick COOJA__QUOTEME(COOJA_JNI_PATH,CLASSNAME,_tick)
 #define Java_org_contikios_cooja_corecomm_CLASSNAME_setReferenceAddress COOJA__QUOTEME(COOJA_JNI_PATH,CLASSNAME,_setReferenceAddress)
-
-/* The main function, implemented in contiki-main.c */
-int main(void);
 
 /* Simulation mote interfaces */
 SIM_INTERFACE_NAME(moteid_interface);
@@ -164,7 +162,12 @@ process_run_thread_loop(void *data)
   cooja_mt_yield();
 
   /* Then call common Contiki-NG main function */
-  coojaa_main();
+  LOG_WARN("main() exited with %d\n", coojaa_main());
+  
+  simProcessRunValue = 0;
+  while (1)
+    cooja_mt_yield();
+  
 }
 
 /**
@@ -276,14 +279,21 @@ Java_org_contikios_cooja_corecomm_CLASSNAME_setMemory(JNIEnv *env, jobject obj, 
 JNIEXPORT void JNICALL
 Java_org_contikios_cooja_corecomm_CLASSNAME_tick(JNIEnv *env, jobject obj)
 {
+
   simProcessRunValue = 0;
 
   /* Let all simulation interfaces act first */
   doActionsBeforeTick();
 
+  LOG_DBG("Tick begin simProcessRunValue=%d", simProcessRunValue);
+
   if(simProcessRunValue == 0) {
     cooja_mt_exec(&process_run_thread);
   }
+
+  simEtimerPending = 0;
+
+  LOG_DBG("Tick end simProcessRunValue=%d", simProcessRunValue);
 
   /* Let all simulation interfaces act before returning to java */
   doActionsAfterTick();

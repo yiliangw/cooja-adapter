@@ -87,6 +87,11 @@ event_base_new(void)
 int
 event_base_dispatch(struct event_base *event_base)
 {
+	if (current_base != NULL) {
+		LOG_ERR("Only support a single running base");
+		return -1;
+	}
+	current_base = event_base;
 	return (event_base_loop(event_base, 0));
 }
 
