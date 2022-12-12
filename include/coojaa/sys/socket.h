@@ -14,6 +14,9 @@ struct sockaddr
 
 typedef unsigned int socklen_t;
 
+extern const struct sockaddr radio_sockaddr;
+extern const socklen_t radio_sockaddr_len;
+
 int connect(int fd, const struct sockaddr *addr, socklen_t len);
 int socket(int domain, int type, int protocol);
 ssize_t send(int sockfd, const void *buf, size_t len, int flags);

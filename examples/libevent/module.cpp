@@ -51,12 +51,16 @@ int main()
     struct timeval tv;
 
     /* Connect to the radio driver socket */
-    // radiofd = socket(0, 0, 0);
-    // if (radiofd == -1) {
-    //     printf("Radio socket connection failed. radiofd=%d\n", radiofd);
-    //     return -1;
-    // }
-    radiofd = RADIO_FD;
+    radiofd = socket(0, 0, 0);
+    if (radiofd == -1) {
+        printf("Radio socket open failed. radiofd=%d\n", radiofd);
+        return -1;
+    }
+
+    if (connect(radiofd, &radio_sockaddr, radio_sockaddr_len)) {
+        printf("Radio socket connnect failed.\n");
+        return -1;
+    }
 
     /* Initialize the event library */
     base = event_base_new();

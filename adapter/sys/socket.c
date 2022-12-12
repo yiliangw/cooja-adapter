@@ -5,9 +5,12 @@
 #include <errno.h>
 
 
+const struct sockaddr radio_sockaddr;
+const socklen_t radio_sockaddr_len = 32;
+
 int connect(int fd, const struct sockaddr *addr, socklen_t addrlen)
 {
-    if (fd == RADIO_FD)
+    if (fd == RADIO_FD && addr == &radio_sockaddr && addrlen == radio_sockaddr_len)
         return 0;
     
     errno = EACCES;
@@ -16,6 +19,7 @@ int connect(int fd, const struct sockaddr *addr, socklen_t addrlen)
 
 int socket(int domain, int type, int protocol)
 {
+    /* We only have radio now. */
     return RADIO_FD;
 }
 
