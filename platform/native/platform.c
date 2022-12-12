@@ -42,6 +42,7 @@
  * @{
  */
 
+#include "coojaa/node-id.h"
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -216,13 +217,6 @@ platform_init_stage_three()
 }
 /*---------------------------------------------------------------------------*/
 
-extern int umain(void);
-void
-platform_main_loop()
-{
-  umain();
-}
-/*---------------------------------------------------------------------------*/
 void
 log_message(char *m1, char *m2)
 {
@@ -236,3 +230,8 @@ uip_log(char *m)
 }
 /*---------------------------------------------------------------------------*/
 /** @} */
+
+int get_node_id()
+{
+  return 1;
+}

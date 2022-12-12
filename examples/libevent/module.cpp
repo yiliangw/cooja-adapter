@@ -10,7 +10,7 @@ extern "C" {
 #include "coojaa/sys/socket.h"
 #include "lib/assert.h"
 
-#include "coojaa/dev/moteid.h"
+#include "coojaa/node-id.h"
 }
 
 struct send_info {
@@ -94,7 +94,7 @@ static void timeout_cb(evutil_socket_t fd, short event, void *arg)
     info = new_send_info(64);
     evutil_gettimeofday(&tv, NULL);
     
-    if (simMoteID == 1) {
+    if (get_node_id() == 1) {
         /* Send the packet once the radio becomes available. */
         sprintf((char*)(info->buf), "Periodic packet %d", cnt);
         printf("Packet registered: %s\n", (const char *)(info->buf));

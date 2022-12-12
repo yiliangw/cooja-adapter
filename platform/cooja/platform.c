@@ -59,7 +59,6 @@
 #include "coojaa/dev/button-sensor.h"
 #include "coojaa/dev/pir-sensor.h"
 #include "coojaa/dev/vib-sensor.h"
-#include "coojaa/dev/moteid.h"
 #include "coojaa/dev/gpio-hal.h"
 
 #include "internal/event-framwork.h"

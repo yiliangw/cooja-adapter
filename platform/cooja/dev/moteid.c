@@ -28,7 +28,7 @@
  *
  */
 
-#include "coojaa/dev/moteid.h"
+#include "coojaa/node-id.h"
 #include "platform/simEnvChange.h"
 #include "lib/random.h"
 
@@ -38,6 +38,11 @@ const struct simInterface moteid_interface;
 int simMoteID;
 char simMoteIDChanged;
 int simRandomSeed;
+
+int get_node_id()
+{
+  return simMoteID;
+}
 
 /*-----------------------------------------------------------------------------------*/
 static void
