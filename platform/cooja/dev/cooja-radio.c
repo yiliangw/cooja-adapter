@@ -41,6 +41,13 @@
 
 #include "sys/energest.h"
 
+/*---------------------------------------------------------------------------*/
+/* Log configuration for foo-radio */
+#include "internal/log.h"
+#define LOG_MODULE "Radio"
+#define LOG_LEVEL LOG_LEVEL_RADIO
+/*---------------------------------------------------------------------------*/
+
 /*
  * The maximum number of bytes this driver can accept from the MAC layer for
  * transmission or will deliver to the MAC layer after reception. Includes
@@ -205,9 +212,9 @@ doInterfaceActionsBeforeTick(void)
     return;
   }
 
-  if(simInSize > 0) {
-    
-  }
+  if(simInSize > 0)
+    LOG_INFO("New packet received");
+
 }
 /*---------------------------------------------------------------------------*/
 static void
@@ -267,14 +274,12 @@ radio_send(const void *payload, unsigned short payload_len)
     ENERGEST_ON(ENERGEST_TYPE_TRANSMIT);
   }
 
-#if COOJA_SIMULATE_TURNAROUND
-  simProcessRunValue = 1;
-  cooja_mt_yield();
-  if(payload_len > 3) {
-    simProcessRunValue = 1;
-    cooja_mt_yield();
-  }
-#endif /* COOJA_SIMULATE_TURNAROUND */
+  // simProcessRunValue = 1;
+  // cooja_mt_yield();
+  // if(payload_len > 3) {
+  //   simProcessRunValue = 1;
+  //   cooja_mt_yield();
+  // }
 
   /* Transmit on CCA */
   if(COOJA_TRANSMIT_ON_CCA && send_on_cca && !channel_clear()) {
@@ -284,11 +289,14 @@ radio_send(const void *payload, unsigned short payload_len)
     memcpy(simOutDataBuffer, payload, payload_len);
     simOutSize = payload_len;
 
+    LOG_INFO("About to send. simOutsize = %d", simOutSize);
     /* Transmit */
     while(simOutSize > 0) {
       cooja_mt_yield();
     }
-  
+
+    LOG_INFO("Packet sent");
+
     result = RADIO_TX_OK;
   }
 
@@ -339,7 +347,7 @@ pending_packet(void)
 static int
 init(void)
 {
-  return 0;
+  return 1;
 }
 /*---------------------------------------------------------------------------*/
 static radio_result_t

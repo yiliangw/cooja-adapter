@@ -1,14 +1,16 @@
 #include <cstdlib>
-#include <string.h>
 
 /* prefix all C header files from coojaa with `extern "C" */
 extern "C" {
+#include <string.h>
 #include <stdio.h>  /* We should use <stdio.h> rather than <iostream> for logging in cooja simulation */
 #include "coojaa/event2/util.h"
 #include "coojaa/event2/event.h"
 #include "coojaa/event2/event_struct.h"
 #include "coojaa/sys/socket.h"
 #include "lib/assert.h"
+
+#include "coojaa/dev/moteid.h"
 }
 
 struct send_info {
@@ -49,12 +51,13 @@ int main()
     struct timeval tv;
 
     /* Connect to the radio driver socket */
-    radiofd = socket(0, 0, 0);
-    if (radiofd == -1) {
-        printf("Radio socket connection failed. radiofd=%d\n", radiofd);
-        return -1;
-    }
-    
+    // radiofd = socket(0, 0, 0);
+    // if (radiofd == -1) {
+    //     printf("Radio socket connection failed. radiofd=%d\n", radiofd);
+    //     return -1;
+    // }
+    radiofd = RADIO_FD;
+
     /* Initialize the event library */
     base = event_base_new();
 
@@ -64,9 +67,11 @@ int main()
     tv.tv_sec = 3;
     event_add(ev_timeout, &tv);
     
+    (void) ev_receive;
+    (void) receive_cb;
     /* Receive event: print the contents of received packets */
-    ev_receive = event_new(base, radiofd, EV_PERSIST|EV_READ, receive_cb, event_self_cbarg());
-    event_add(ev_receive, NULL);
+    // ev_receive = event_new(base, radiofd, EV_PERSIST|EV_READ, receive_cb, event_self_cbarg());
+    // event_add(ev_receive, NULL);
 
     event_base_dispatch(base);
 
@@ -78,20 +83,22 @@ int main()
 static void timeout_cb(evutil_socket_t fd, short event, void *arg)
 {
     static int cnt = 0;
-    static const int buflen = 128;
 
     struct timeval tv;
     struct event *ev_send;
     struct send_info *info;
 
     /* Send a packet containing the counter and current time.*/
-    info = new_send_info(buflen);
+    info = new_send_info(64);
     evutil_gettimeofday(&tv, NULL);
-    sprintf((char*)(info->buf), "Periodic packet %d at %ld s\n", cnt, tv.tv_sec);
+    printf("%s %d at %ld s\n", __func__, cnt, tv.tv_sec);
     
-    /* Send the packet once the radio becomes available. */
-    ev_send = event_new(base, radiofd, EV_WRITE, send_packet, info);
-    event_add(ev_send, NULL);
+    if (simMoteID == 1) {
+        /* Send the packet once the radio becomes available. */
+        sprintf((char*)(info->buf), "Periodic packet %d at %ld s\n", cnt, tv.tv_sec);
+        ev_send = event_new(base, radiofd, EV_WRITE, send_packet, info);
+        event_add(ev_send, NULL);
+    }
 
     cnt++;
 }

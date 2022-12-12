@@ -39,14 +39,6 @@
 
 #include "platform/simEnvChange.h"
 
-#define DEBUG 0
-#if DEBUG
-#include <stdio.h>
-#define PRINTF(...) printf(__VA_ARGS__)
-#else
-#define PRINTF(...)
-#endif
-
 /* COOJA */
 int simRtimerPending;
 rtimer_clock_t simRtimerNextExpirationTime;

@@ -14,6 +14,8 @@
 #define event_warnx(...) 		LOG_WARN(__VA_ARGS__)
 #define event_warn(...)			event_warnx(__VA_ARGS__)
 
+#define event_msgx(...)			LOG_INFO(__VA_ARGS__)
+
 #define event_debugx_(...) 		LOG_DBG(__VA_ARGS__)
 #define event_debug(x) do { \
 	event_debugx_ x;		\

@@ -153,18 +153,22 @@ platform_init_stage_three()
   /* Start serial process */
 }
 /*---------------------------------------------------------------------------*/
+static int main_exited = 0;
 int coojaa_main(void);
 static void
 process_run_thread_loop(void *data)
 {
+  int res;
   /* Yield once during bootup */
   simProcessRunValue = 1;
   cooja_mt_yield();
 
-  /* Then call common Contiki-NG main function */
-  LOG_WARN("main() exited with %d\n", coojaa_main());
-  
+  res = coojaa_main();
+
+  LOG_WARN("main() exited with %d", res);
+  main_exited = 1;
   simProcessRunValue = 0;
+  
   while (1)
     cooja_mt_yield();
   
@@ -285,15 +289,18 @@ Java_org_contikios_cooja_corecomm_CLASSNAME_tick(JNIEnv *env, jobject obj)
   /* Let all simulation interfaces act first */
   doActionsBeforeTick();
 
-  LOG_DBG("Tick begin simProcessRunValue=%d", simProcessRunValue);
+  if (!main_exited)
+    LOG_DBG("Tick begin simProcessRunValue = %d", simProcessRunValue);
 
   if(simProcessRunValue == 0) {
     cooja_mt_exec(&process_run_thread);
   }
 
-  simEtimerPending = 0;
+  simEtimerPending = 1;
+  simEtimerNextExpirationTime = 0;
 
-  LOG_DBG("Tick end simProcessRunValue=%d", simProcessRunValue);
+  if (!main_exited)
+    LOG_DBG("Tick end simProcessRunValue = %d", simProcessRunValue);
 
   /* Let all simulation interfaces act before returning to java */
   doActionsAfterTick();
