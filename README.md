@@ -1,4 +1,4 @@
-# Cooja Adapter (CoojaA)
+# CoojaA (Cooja Adapter)
 
 An adapter facilitating more event driven applications to run on Cooja. Currently with libevent support. 
 
