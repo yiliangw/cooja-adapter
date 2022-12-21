@@ -27,11 +27,11 @@ static bool is_sender()
 static int radiofd;
 static struct event_base *base;
 
-#define PACKET_SIZE    1024
+#define PACKET_SIZE    64
 #define SEND_BUF_SIZE   PACKET_SIZE
 #define RECV_BUF_SIZE   (3 * PACKET_SIZE) 
-static char sendbuf[SEND_BUF_SIZE];
-static char recvbuf[RECV_BUF_SIZE];
+static unsigned char sendbuf[SEND_BUF_SIZE];
+static unsigned char recvbuf[RECV_BUF_SIZE];
 
 /* Define the entry as extern "C"` since its called from C code */
 extern "C"
@@ -90,22 +90,27 @@ static void receive_cb(evutil_socket_t fd, short event, void *arg)
     ssize_t res = recv(radiofd, recvbuf, RECV_BUF_SIZE, 0);
 
     if (res == -1)
-        printf("%s: Fail to receive\n", __func__);
-    else
-        printf("%s: Recieve: %s\n", __func__, recvbuf);
+        printf("Fail to receive\n");
+    else {
+        printf("Receive: ");
+        for (int i = 0; i < res; i++) {
+            printf("%u", (unsigned int)recvbuf[i]);
+        }
+        printf("\n");
+    }
 
 }
 
 static void init_sendbuf()
 {
-    for (int i = 0; i < SEND_BUF_SIZE - 1; i++) {
-        sendbuf[i] = 'a';
+    char c = (unsigned char) get_node_id();
+
+    for (int i = 0; i < SEND_BUF_SIZE; i++) {
+        sendbuf[i] = c;
     }
-    sendbuf[SEND_BUF_SIZE - 1] = 0;
 }
 
 static void send_packet(evutil_socket_t fd, short event, void *arg)
 {
     send(radiofd, sendbuf, SEND_BUF_SIZE, 0);
-    printf("Packet sent.\n");
 }
