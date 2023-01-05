@@ -95,14 +95,15 @@ static void timeout_cb(evutil_socket_t fd, short event, void *arg)
     evutil_gettimeofday(&tv, NULL);
     
     if (get_node_id() == 1) {
+
+        cnt = (cnt + 1) % 10;
         /* Send the packet once the radio becomes available. */
-        sprintf((char*)(info->buf), "Periodic packet %d", cnt);
+        sprintf((char*)(info->buf), "%d", cnt);
+        info->len = strlen((char*)(info->buf)) + 1;
         printf("Packet registered: %s\n", (const char *)(info->buf));
         ev_send = event_new(base, radiofd, EV_WRITE, send_packet, info);
         event_add(ev_send, NULL);
     }
-
-    cnt++;
 }
 
 static void receive_cb(evutil_socket_t fd, short event, void *arg)
