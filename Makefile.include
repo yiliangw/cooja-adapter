@@ -371,7 +371,7 @@ ifdef REDEFINE_PRINTF
 endif
 	$(TRACE_LD)
 	$(Q)$(LD) $(LDFLAGS) $(TARGET_STARTFILES) ${filter-out %.a,$^} \
-	    ${filter %.a,$^} $(TARGET_LIBFILES) -o $(LIBNAME)
+	    ${filter %.a,$^} $(TARGET_LIBFILES) $(PROJECT_LDFLAGS) -o $(LIBNAME)
 endif
 
 %.$(TARGET): $(BUILD_DIR_BOARD)/%.$(TARGET)
