@@ -220,6 +220,7 @@ vpath %.s $(SOURCEDIRS)
 
 CFLAGS += -I$(COOJAA)/include 
 CFLAGS += -I$(COOJAA)/adapter/internal-include
+CFLAGS += $(PROJECT_CFLAGS)
 
 ### Check for a git repo and pass version if found
 ### git.exe in Windows cmd shells may require no stderr redirection
