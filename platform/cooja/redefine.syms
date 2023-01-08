@@ -3,6 +3,7 @@ printf    log_printf
 sprintf   log_sprintf
 snprintf  log_snprintf
 vsnprintf log_vsnprintf
+vprintf   log_vprintf
 puts      log_puts
 putchar   log_putchar
 connect   coojaa_connect
